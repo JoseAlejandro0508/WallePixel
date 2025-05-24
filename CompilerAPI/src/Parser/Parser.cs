@@ -1,26 +1,68 @@
 public class Parser{
-    public List<Error> CE;
+    public List<Error>  CE;
     public TokenStream Stream;
-    public List<IValue>AST;
     public Parser(TokenStream Stream,List<Error> CE){
         this.Stream = Stream;
         this.CE = CE;
 
     }
+
+
     public  IValue ParseExpression(){
 
+        return ParseLogic();
 
-        return ParseComparison();
+    }
+    public  IValue ParseLogic(){
+        IValue expr=ParseOR();
+        while(!Stream.EOL && Stream.Match([TokenIDS.AndOper])){
+
+            if(! (expr is BasicValue<bool>)|| expr is null){
+                throw new Exception("Operacion logica invalida");
+            }
+            Token OP=Stream.Current;
+            Stream.Next();
+            IValue right=ParseOR();
+            if( !(right is BasicValue<bool>) || right is null){
+                throw new Exception("Operacion logica invalida");
+            }
+            expr=new And(expr as BasicValue<bool>,right as BasicValue<bool>,OP);
+
+        }
+        
+        return expr;
+
+    }
+    public  IValue ParseOR(){
+        IValue expr=ParseComparison();
+        while(!Stream.EOL && Stream.Match([TokenIDS.OrOper])){
+
+            if(! (expr is BasicValue<bool>)|| expr is null){
+                throw new Exception("Operacion logica invalida");
+            }
+            Token OP=Stream.Current;
+            Stream.Next();
+            IValue right=ParseComparison();
+            if( !(right is BasicValue<bool>) || right is null){
+                throw new Exception("Operacion logica invalida");
+            }
+            expr=new Or(expr as BasicValue<bool>,right as BasicValue<bool>,OP);
+
+        }
+        
+        return expr;
 
     }
 
-    
+
+
+
 
     public IValue ParseComparison(){
         BasicValue<int> left=ParseTerm();
  
 
-        if(!Stream.EOL && Stream.Match([TokenIDS.MoreEqualOper,TokenIDS.LessEqualOper,TokenIDS.LessOper,TokenIDS.MoreOper ])){
+        if(!Stream.EOL && Stream.Match([TokenIDS.MoreEqualOper,TokenIDS.LessEqualOper,TokenIDS.LessOper,TokenIDS.MoreOper ,TokenIDS.EqualOper])){
             Token OP=Stream.Current;
             if(Stream.Match([TokenIDS.MoreEqualOper] )){
                 Stream.Next();
@@ -45,6 +87,12 @@ public class Parser{
                 Stream.Next();
                 BasicValue<int> right=ParseFactor();
                 return new More(left,right,OP);
+                
+            }
+            if(Stream.Match([TokenIDS.EqualOper] )){
+                Stream.Next();
+                BasicValue<int> right=ParseFactor();
+                return new Equal(left,right,OP);
                 
             }
 
@@ -133,8 +181,12 @@ public class Parser{
         if(Stream.Match([TokenIDS.OpenParenteses] )){
             Token OP=Stream.Current;
             Stream.Next();
-            
-            expr=ParseExpression();
+            IValue expr_=ParseExpression();
+            if(!(expr_ is BasicValue<int>)){
+                throw new Exception("Solo se permite el parentizado en operaciones numericas");
+            }
+            expr=ParseExpression() as BasicValue<int>;
+
             if(!Stream.Match([TokenIDS.CloseParenteses] )){
                 throw new Exception("Parentesis no cerrado");
 
