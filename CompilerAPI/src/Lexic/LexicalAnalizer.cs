@@ -10,6 +10,7 @@ public class LexicalAnalizer{
         while(!Reader.EOF){
             Reader.WhiteSpaceMove();
             if(Reader.EOL){
+                Tokens.Add(new Token(Reader.CodeLocation,TokenType.EOL,"\n"));
                 Reader.MovePointer();
                 continue;
             }
@@ -60,6 +61,8 @@ public class LexicalAnalizer{
             
 
         }
+        Tokens.Add(new Token(Reader.CodeLocation,TokenType.EOF,"EOF"));
+
 
 
     }

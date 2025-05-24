@@ -29,6 +29,8 @@ public enum TokenType{
     Bucle,
     Keyword,
     Symbol,
+    EOL,
+    EOF,
 
     
 }
