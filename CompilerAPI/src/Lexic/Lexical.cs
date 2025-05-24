@@ -66,7 +66,7 @@ public static class LexicDates{
 
 
 public class TokenInfo{
-    TokenIDS tokenIDS;
+    public TokenIDS tokenIDS;
     //Parseo
     public TokenInfo(TokenIDS tokenIDS){
         this.tokenIDS = tokenIDS;
