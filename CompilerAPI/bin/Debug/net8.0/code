@@ -1,0 +1,20 @@
+    Spawn(0, 0)
+
+  Color("Black")
+
+ n <- 5
+
+ k  <- 3 + 3 * 10
+
+n  <- k * 2
+"l
+actual_x <- GetActualX()
+
+
+
+   
+    
+
+     
+
+
