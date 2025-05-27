@@ -1,7 +1,11 @@
+using System.Text.RegularExpressions;
+
 public class Parser{
     public List<Error>  CE;
     public TokenStream Stream;
-    public Parser(TokenStream Stream,List<Error> CE){
+    public Environment ProgramEnvironment;
+    public Parser(TokenStream Stream,List<Error> CE,Environment env){
+        ProgramEnvironment = env;
         this.Stream = Stream;
         this.CE = CE;
 
@@ -13,11 +17,13 @@ public class Parser{
         return ParseLogic();
 
     }
+
     public  IValue ParseLogic(){
         IValue expr=ParseOR();
         while(!Stream.EOL && Stream.Match([TokenIDS.AndOper])){
 
             if(! (expr is BasicValue<bool>)|| expr is null){
+                CE.Add(new Error("Operacion logica no valida,solo es posible utilizar el operador and entre 2 booleanos",Stream.Current.Position));
                 throw new Exception("Operacion logica invalida");
             }
             Token OP=Stream.Current;
@@ -38,6 +44,7 @@ public class Parser{
         while(!Stream.EOL && Stream.Match([TokenIDS.OrOper])){
 
             if(! (expr is BasicValue<bool>)|| expr is null){
+                CE.Add(new Error("Operacion logica no valida,solo es posible utilizar el operador or entre 2 booleanos",Stream.Current.Position));
                 throw new Exception("Operacion logica invalida");
             }
             Token OP=Stream.Current;
@@ -108,16 +115,23 @@ public class Parser{
 
         BasicValue<int> expr=ParseFactor();
         while(!Stream.EOL && Stream.Match([TokenIDS.AddOper,TokenIDS.RestOper] )){
-            Token OP=Stream.Current;
+            
             if(Stream.Match([TokenIDS.AddOper] )){
+                Token OP=Stream.Current;
                 Stream.Next();
+
                 BasicValue<int> right=ParseFactor();
+                
                 expr=new Add(expr,right,OP);
+                
                 
             }
             if(Stream.Match([TokenIDS.RestOper] )){
+                Token OP=Stream.Current;
                 Stream.Next();
+                
                 BasicValue<int> right=ParseFactor();
+               
                 expr=new Rest(expr,right,OP);
                 
             }
@@ -133,22 +147,27 @@ public class Parser{
     public BasicValue<int> ParseFactor(){
         BasicValue<int> expr=ParsePow();
         while(!Stream.EOL && Stream.Match([TokenIDS.MultOper,TokenIDS.DivOper,TokenIDS.ModOper] )){
-            Token OP=Stream.Current;
+            
             if(Stream.Match([TokenIDS.MultOper] )){
+                Token OP=Stream.Current;
                 Stream.Next();
                 BasicValue<int> right=ParsePow();
+
                 expr=new Mult(expr,right,OP);
                 
             }
             if(Stream.Match([TokenIDS.DivOper] )){
+                Token OP=Stream.Current;
                 Stream.Next();
                 BasicValue<int> right=ParsePow();
                 expr=new Div(expr,right,OP);
                 
             }
             if(Stream.Match([TokenIDS.ModOper] )){
+                Token OP=Stream.Current;
                 Stream.Next();
                 BasicValue<int> right=ParsePow();
+                
                 expr=new Mod(expr,right,OP);
                 
             }
@@ -183,11 +202,13 @@ public class Parser{
             Stream.Next();
             IValue expr_=ParseExpression();
             if(!(expr_ is BasicValue<int>)){
+                CE.Add(new Error("El parentizado solo esta permitido para operaciones numericas",Stream.Current.Position));
                 throw new Exception("Solo se permite el parentizado en operaciones numericas");
             }
             expr=ParseExpression() as BasicValue<int>;
 
             if(!Stream.Match([TokenIDS.CloseParenteses] )){
+                CE.Add(new Error("Se esperaba un cierre de parentesis )",Stream.Current.Position));
                 throw new Exception("Parentesis no cerrado");
 
             }
@@ -202,10 +223,25 @@ public class Parser{
 
     }
 
-    public Number ParseNumber(){
+    public BasicValue<int> ParseUnary(){
         if(Stream.EOL){
+            CE.Add(new Error("Se esperaba un token de formato numero",Stream.Current.Position));
             
             throw new Exception("Se esperaba un Numero");
+
+        }
+        if(Stream.Current.Type==TokenType.Variable){
+            object Value;
+            if(!ProgramEnvironment.Get(Stream.Current,out Value)){
+                CE.Add(new Error($"La variable {Stream.Current.Value} no ha sido asignada",Stream.Current.Position));
+                throw new Exception("Variable no asignada");
+            }
+            if(!(Value is BasicValue<int>)){
+                CE.Add(new Error($"La variable {Stream.Current.Value} no es numerica",Stream.Current.Position));
+                throw new Exception("Variable no numerica");
+            }
+            Stream.Next();
+            return Value as BasicValue<int>;
 
         }
         Number number=new Number(Stream.Current);

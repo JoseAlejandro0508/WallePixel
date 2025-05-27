@@ -136,8 +136,11 @@ public class LexicalAnalizer{
                         
                     } 
             }
-            if(!inEOL) pos++;
-            initWord=false;
+
+            if(!inEOL){
+                pos++;
+            } 
+
 
         }
         public bool IsValidVarChar(){
@@ -148,6 +151,7 @@ public class LexicalAnalizer{
             Value_="";
             WhiteSpaceMove();
             while(!EOF&&IsValidVarChar()){
+                initWord=false;
                 Value_+=PointerValue;
                 MovePointer();
             }

@@ -55,11 +55,11 @@ public abstract class BinaryExpression<IN,OUT>:BasicValue<OUT>{
             throw new Exception("El Identificador de la operacion no se corresponde con el operador");
         }
         if(!left.CheckSemantic(CE)){
-            CE.Add(new Error("Hay un error con un operando",left.Location_));
+            CE.Add(new Error("Hay un error al obtener el valor de un operando",left.Location_));
             return false;
         }
         if(!right.CheckSemantic(CE)){
-            CE.Add(new Error("Hay un error con un operando",right.Location_));
+            CE.Add(new Error("Hay un error al obtener el valor de un operando",right.Location_));
             return false;
         }
         try{
@@ -80,13 +80,15 @@ public abstract class BinaryExpression<IN,OUT>:BasicValue<OUT>{
 }
 
 public class Variable<OUT>:BasicValue<OUT>{
-    public string ID;
+    public Token ID;
+    public Token Asignator;
     public BasicValue<OUT> PrimitiveValue;
 
-    public Variable(string ID_,BasicValue<OUT> Value_){
+    public Variable(Token ID_,BasicValue<OUT> Value_,Token Asignator){
         PrimitiveValue=Value_;
         ID=ID_;
-        Location_=Value_.Location_;
+        Location_=ID.Position;
+        this.Asignator=Asignator;
         
     }
     public override void GetValue(){

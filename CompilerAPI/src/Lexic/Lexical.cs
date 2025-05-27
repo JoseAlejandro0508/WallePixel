@@ -33,7 +33,8 @@ public static class LexicDates{
         RegisterKeyword("IsBrushSize",new TokenInfo(TokenIDS.IsBrushSizeFunc));
         RegisterKeyword("IsCanvasColor",new TokenInfo(TokenIDS.IsCanvasColorFunc));
         RegisterKeyword("IsColor",new TokenInfo(TokenIDS.IsColorFunc));
-
+        RegisterKeyword("if",new TokenInfo(TokenIDS.IF));
+        RegisterKeyword("if",new TokenInfo(TokenIDS.ELSE));
         RegisterBucle("GoTo",new TokenInfo(TokenIDS.GoToBucle));
 
         RegisterOperator("*",new TokenInfo(TokenIDS.MultOper));
@@ -58,6 +59,8 @@ public static class LexicDates{
         RegisterOperator(")",new TokenInfo(TokenIDS.CloseParenteses));
         RegisterOperator("[",new TokenInfo(TokenIDS.OpenCorchete));
         RegisterOperator("]",new TokenInfo(TokenIDS.CloseCorchete));
+        RegisterOperator("{",new TokenInfo(TokenIDS.OpenBlock));
+        RegisterOperator("}",new TokenInfo(TokenIDS.CloseBlock));
 
         
     }
@@ -97,6 +100,8 @@ public enum TokenIDS{
     CloseParenteses,// )
     OpenCorchete,// [
     CloseCorchete,// ]
+    OpenBlock,// {
+    CloseBlock,// }
     
 
 
@@ -117,4 +122,7 @@ public enum TokenIDS{
     IsCanvasColorFunc,//IsCanvasColor
     IsColorFunc,//IsColor
     Tag,// text
+
+    IF,//if
+    ELSE,//else
 }

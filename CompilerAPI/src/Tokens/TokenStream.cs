@@ -1,4 +1,5 @@
 public class TokenStream{
+    public List<Error>  CE;
     public List<Token> Tokens;
     private int position;
     public bool EOL{
@@ -17,24 +18,58 @@ public class TokenStream{
             return (Tokens[position]);
         }
     }
-    TokenStream(List<Token> Tokens)
+    public TokenStream(List<Token> Tokens,List<Error>  CE)
     {
+        this.CE= CE;
         this.Tokens = Tokens;
 
     }
+
     public void Next(){
         if (EOF)return;
         position++;
 
     }
+    public void Syncronize(){
+        while(!EOL){
+            Next();
+        }
+        /*while(!EOF && EOL){
+            Next();
+
+        }*/
+       
+    }
     public bool Match(List<TokenIDS>TokenID){
         foreach (TokenIDS tokenID in TokenID){
+            if(!LexicDates.Operators.ContainsKey(Current.Value))return false;
             if (tokenID==LexicDates.Operators[Current.Value].tokenIDS){
                 return true;
             }
         }
         return false;
     }
+    public bool Consume(TokenIDS tokenID,string MessageError){
+        Next();
+        if(!LexicDates.Operators.ContainsKey(Current.Value)){
+            CE.Add(new Error("Operador no reconocido",Current.Position));
+            return false;
+        }
+        if (tokenID==LexicDates.Operators[Current.Value].tokenIDS){
+                return true;
+            
+
+        }
+        CE.Add(new Error("MessageError",Current.Position));
+        Syncronize();
+        return false;
+    }
+
+        
+       
+    
+
+
     
 
 }
