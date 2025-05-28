@@ -4,13 +4,13 @@ public interface IValue{
 
     public abstract void GetValue();
 }
-public abstract class BasicValue<T>:IValue{
-    public T Value;
+public abstract class BasicValue:IValue{
+    public object? Value;
     public Location Location_;
     public abstract void GetValue();
     public abstract bool CheckSemantic(List<Error> ComplierErrors);
 }
-public abstract class PrimitiveDate<T>:BasicValue<T>{
+public abstract class PrimitiveDate:BasicValue{
     public Token TokenValue{get;private set;}
 
     public PrimitiveDate(Token token){
