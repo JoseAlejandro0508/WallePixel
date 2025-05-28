@@ -83,23 +83,32 @@ public class Variable<OUT>:BasicValue<OUT>{
     public Token ID;
     public Token Asignator;
     public BasicValue<OUT> PrimitiveValue;
+    public Compiling CR;
 
-    public Variable(Token ID_,BasicValue<OUT> Value_,Token Asignator){
+    public Variable(Token ID_,BasicValue<OUT> Value_,Token Asignator,Compiling CR){
         PrimitiveValue=Value_;
         ID=ID_;
         Location_=ID.Position;
+        this.CR=CR;
         this.Asignator=Asignator;
         
     }
     public override void GetValue(){
 
-        
         this.Value=PrimitiveValue.Value;
 
 
 
     }
     public override bool CheckSemantic(List<Error> CE){
+        dynamic var_=null;
+        if(CR.ProgramEnvironment.Check(ID,out var_)){
+            bool result=var_.CheckSemantic(CE);
+            if(!result)return false;
+            this.PrimitiveValue=var_.PrimitiveValue;
+
+           
+        }
         if(!PrimitiveValue.CheckSemantic(CE)){
             CE.Add(new Error("Error al obtener el valor asociado a la variable",PrimitiveValue.Location_));
             return false;

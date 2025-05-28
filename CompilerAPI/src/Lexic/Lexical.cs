@@ -34,7 +34,9 @@ public static class LexicDates{
         RegisterKeyword("IsCanvasColor",new TokenInfo(TokenIDS.IsCanvasColorFunc));
         RegisterKeyword("IsColor",new TokenInfo(TokenIDS.IsColorFunc));
         RegisterKeyword("if",new TokenInfo(TokenIDS.IF));
-        RegisterKeyword("if",new TokenInfo(TokenIDS.ELSE));
+        RegisterKeyword("else",new TokenInfo(TokenIDS.ELSE));
+
+        RegisterBucle("while",new TokenInfo(TokenIDS.WHILEBulce));
         RegisterBucle("GoTo",new TokenInfo(TokenIDS.GoToBucle));
 
         RegisterOperator("*",new TokenInfo(TokenIDS.MultOper));
@@ -106,6 +108,7 @@ public enum TokenIDS{
 
 
     GoToBucle,// GoTo
+    WHILEBulce,//while
     SpawnFunc,//Spawn
     ColorFunc,//Color
     SizeFunc,//Size

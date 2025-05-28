@@ -14,12 +14,10 @@ class IF:Statement{
     }
     public override void Execute()
     {
-        try{
-            Condition.CheckSemantic(CompilatorRef.CE);
-        }catch{
+        if(!Condition.CheckSemantic(CompilatorRef.CE)){
             CompilatorRef.CE.Add(new Error($"Error al obtener el valor de la condicion del condicional if", IFID.Position));
-            throw new Exception();
-        }
+            return;
+        };
         if(Condition.Value){
             IfThen.Execute();
         }else{

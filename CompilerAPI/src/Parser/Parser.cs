@@ -215,7 +215,7 @@ public class Parser{
             Stream.Next();
 
        }else{
-        expr=ParseNumber();
+        expr=ParseUnary();
        }
 
        
@@ -241,7 +241,7 @@ public class Parser{
                 throw new Exception("Variable no numerica");
             }
             Stream.Next();
-            return Value as BasicValue<int>;
+            return Value as Variable<int>;
 
         }
         Number number=new Number(Stream.Current);
