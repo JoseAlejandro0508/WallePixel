@@ -69,9 +69,9 @@ public class Compiling
         
     }
 
-    public bool VariableAssignParse(out Statement Declaration)
+    public bool VariableAssignParse(out Statement Declaration_)
     {
-        Declaration = null;
+        Declaration_= null;
         if (parser.Stream.Current.Type != TokenType.Variable)
         {
             return false;
@@ -83,30 +83,33 @@ public class Compiling
             
         }
         Token OP = parser.Stream.Current;
-        IValue value = parser.ParseExpression();
+        BasicValue value;
+        try{
+            value = parser.ParseExpression();
+
+        }catch{
+            parser.Stream.Syncronize();
+            return false;
+        }
+        
         if(!parser.Stream.EOL){
             CE.Add(new Error($"Sintaxis de asignacion invalida de declaracion", parser.Stream.Current.Position));
             parser.Stream.Syncronize();
             return false;
 
         }
-        if (value is BasicValue<int>)
-        {
 
-            Variable<int> var_ = new Variable<int>(ID, value as BasicValue<int>, OP,this);
-            if(!var_.CheckSemantic(CE)){
+
+        Variable var_ = new Variable(ID, value , OP,this);
+        if(!var_.CheckSemantic(CE)){
                 parser.Stream.Syncronize();
                 return false;
-            }
-            VariableAssign asignament = new VariableAssign(this, var_);
-            
-            return true;
-
-
         }
-        CE.Add(new Error($"Se le esta asingando un tipo no permitido a la variable {ID.Value}", parser.Stream.Current.Position));
-        parser.Stream.Syncronize();
-        return false;
+        Declaration_ = new VariableAssign(this, var_);
+            
+        return true;
+
+
 
 
     }
@@ -156,7 +159,7 @@ public class Compiling
             parser.Stream.Syncronize();
             return false;
         }
-        IValue Condition = parser.ParseExpression();
+        BasicValue Condition = parser.ParseExpression();
         if(!(Condition is BasicValue<bool>)){
             CE.Add(new Error("El condicional if solo acepta parametros de tipo booleanos", parser.Stream.Current.Position));
             parser.Stream.Syncronize();
@@ -213,7 +216,7 @@ public class Compiling
             parser.Stream.Syncronize();
             return false;
         }
-        IValue Condition = parser.ParseExpression();
+        BasicValue Condition = parser.ParseExpression();
         if(!(Condition is BasicValue<bool>)){
             CE.Add(new Error("El bucle while solo acepta parametros de tipo booleanos", parser.Stream.Current.Position));
             parser.Stream.Syncronize();
@@ -273,7 +276,7 @@ public class Compiling
         }
 
         
-        IValue Condition = parser.ParseExpression();
+        BasicValue Condition = parser.ParseExpression();
         if(!(Condition is BasicValue<bool>)){
             CE.Add(new Error("El bucle GoTO solo acepta parametros de tipo booleanos", parser.Stream.Current.Position));
             parser.Stream.Syncronize();

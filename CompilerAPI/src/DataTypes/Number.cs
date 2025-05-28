@@ -1,5 +1,5 @@
 
-public class Number:PrimitiveDate<int>{
+public class Number:PrimitiveDate{
     public Number(Token token):base(token) {
 
     }

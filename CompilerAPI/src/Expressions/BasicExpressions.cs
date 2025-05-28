@@ -2,12 +2,12 @@ using System.Numerics;
 
 public interface IValue{
 
-    public abstract void GetValue();
+    public abstract void GetValue(List<Error> CE);
 }
 public abstract class BasicValue:IValue{
-    public object? Value;
+    public object Value;
     public Location Location_;
-    public abstract void GetValue();
+    public abstract void GetValue(List<Error> CE);
     public abstract bool CheckSemantic(List<Error> ComplierErrors);
 }
 public abstract class PrimitiveDate:BasicValue{
@@ -22,7 +22,7 @@ public abstract class PrimitiveDate:BasicValue{
     {
 
         try{
-            GetValue();
+            GetValue(CE);
 
 
         }catch{
@@ -37,13 +37,13 @@ public abstract class PrimitiveDate:BasicValue{
 
     
 }
-public abstract class BinaryExpression<IN,OUT>:BasicValue<OUT>{
-    public BasicValue<IN> left;
-    public BasicValue<IN> right;
+public abstract class BinaryExpression:BasicValue{
+    public BasicValue left;
+    public BasicValue right;
     public Token Operator;
     public string IDOperator;
     
-    public BinaryExpression(BasicValue<IN> left_,BasicValue<IN> right_,Token Operator_){
+    public BinaryExpression(BasicValue left_,BasicValue right_,Token Operator_){
         Operator=Operator_;
         left=left_;
         right=right_;
@@ -62,8 +62,9 @@ public abstract class BinaryExpression<IN,OUT>:BasicValue<OUT>{
             CE.Add(new Error("Hay un error al obtener el valor de un operando",right.Location_));
             return false;
         }
+
         try{
-            GetValue();
+            GetValue(CE);
           
         
         }
@@ -79,13 +80,13 @@ public abstract class BinaryExpression<IN,OUT>:BasicValue<OUT>{
 
 }
 
-public class Variable<OUT>:BasicValue<OUT>{
+public class Variable:BasicValue{
     public Token ID;
     public Token Asignator;
-    public BasicValue<OUT> PrimitiveValue;
+    public BasicValue PrimitiveValue;
     public Compiling CR;
 
-    public Variable(Token ID_,BasicValue<OUT> Value_,Token Asignator,Compiling CR){
+    public Variable(Token ID_,BasicValue Value_,Token Asignator,Compiling CR){
         PrimitiveValue=Value_;
         ID=ID_;
         Location_=ID.Position;
@@ -93,7 +94,7 @@ public class Variable<OUT>:BasicValue<OUT>{
         this.Asignator=Asignator;
         
     }
-    public override void GetValue(){
+    public override void GetValue(List<Error> CE){
 
         this.Value=PrimitiveValue.Value;
 
@@ -101,7 +102,7 @@ public class Variable<OUT>:BasicValue<OUT>{
 
     }
     public override bool CheckSemantic(List<Error> CE){
-        dynamic var_=null;
+        Variable var_=null;
         if(CR.ProgramEnvironment.Check(ID,out var_)){
             bool result=var_.CheckSemantic(CE);
             if(!result)return false;
@@ -114,7 +115,7 @@ public class Variable<OUT>:BasicValue<OUT>{
             return false;
         };
         try{
-            GetValue();
+            GetValue(CE);
         }
         catch{
             CE.Add(new Error($"Error al asociar el valor a la variable {ID}",Location_));

@@ -1,14 +1,20 @@
-public class Pow:BinaryExpression<int,int>{
-    public Pow(BasicValue<int> left_,BasicValue<int> right_,Token Operator):base(left_,right_,Operator)
+public class Pow:BinaryExpression{
+    public Pow(BasicValue left_,BasicValue right_,Token Operator):base(left_,right_,Operator)
     {
         IDOperator="**";
 
         Location_=Operator.Position;
 
     }
-    public override void GetValue()
+    public override void GetValue(List<Error> CE)
     {
-        Value=(int)Math.Pow((double)left.Value,(double)right.Value);
+        if(!(left.Value is int) || !(right.Value is int)){
+             CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 enteros",Operator.Position));
+            throw new Exception("Tipos de datos invalidos");
+
+        }
+
+        Value=Math.Pow((int)left.Value,(int)right.Value);
     }
 
 

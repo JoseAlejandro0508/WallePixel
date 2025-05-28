@@ -1,14 +1,20 @@
-public class Or:BinaryExpression<bool,bool>{
-    public Or(BasicValue<bool> left_,BasicValue<bool> right_,Token Operator):base(left_,right_,Operator)
+public class Or:BinaryExpression{
+    public Or(BasicValue left_,BasicValue right_,Token Operator):base(left_,right_,Operator)
     {
         IDOperator="||";
 
         Location_=Operator.Position;
 
     }
-    public override void GetValue()
+    public override void GetValue(List<Error> CE)
     {
-        Value=left.Value || right.Value;
+        if(!(left.Value is bool) || !(right.Value is bool)){
+             CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 booleanos",Operator.Position));
+            throw new Exception("Tipos de datos invalidos");
+
+        }
+
+        Value=(bool)left.Value || (bool)right.Value;
     }
 
 

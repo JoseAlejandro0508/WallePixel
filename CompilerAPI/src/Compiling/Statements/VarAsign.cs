@@ -1,9 +1,9 @@
 using System.Runtime.Intrinsics.Arm;
 
 class VariableAssign:Statement{
-    public dynamic Variable;
+    public Variable Variable;
 
-    public VariableAssign(Compiling CR,object variable) :base(CR){
+    public VariableAssign(Compiling CR,Variable variable) :base(CR){
         Variable=variable;
         
 

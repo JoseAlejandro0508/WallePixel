@@ -1,5 +1,5 @@
 
-public class String:PrimitiveDate<string>{
+public class String:PrimitiveDate{
     public String(Token token):base(token) {
 
     }

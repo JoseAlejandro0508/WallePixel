@@ -1,5 +1,5 @@
 public class Environment{
-    public Dictionary <string,object> Memory=new Dictionary <string,object> ();
+    public Dictionary <string,Variable> Memory=new Dictionary <string, Variable> ();
     public List<Token> Tags=new List<Token>();
     public List<Error> CE;
     public Environment Enclosing;
@@ -18,14 +18,14 @@ public class Environment{
         }
 
     }
-    public void Assign(Token ID, object value){
+    public void Assign(Token ID, Variable value){
         if(Enclosing!=null){
             Enclosing.Assign (ID, value);
         }
         Memory[ID.Value]=value;
 
     }
-    public bool Get(Token ID,out object Value){
+    public bool Get(Token ID,out Variable Value){
         if(Enclosing!=null){
             if(Enclosing.Get(ID,out Value)){
                 return true;
@@ -40,7 +40,7 @@ public class Environment{
         return true;
 
     }
-    public bool Check(Token ID,out object Value){
+    public bool Check(Token ID,out Variable Value){
         if(Enclosing!=null){
             if(Enclosing.Get(ID,out Value)){
                 return true;

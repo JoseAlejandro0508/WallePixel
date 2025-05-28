@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj": {}
+    "c:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj": {
+    "c:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj",
+        "projectUniqueName": "c:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj",
         "projectName": "CompilerAPI",
-        "projectPath": "C:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj",
+        "projectPath": "c:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\CompilerAPI.csproj",
         "packagesPath": "C:\\Users\\Alejandro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\obj\\",
+        "outputPath": "c:\\Users\\Alejandro\\Desktop\\WalleProyect\\WallePixel\\CompilerAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Alejandro\\AppData\\Roaming\\NuGet\\NuGet.Config"
