@@ -18,7 +18,7 @@ public class DefinedFunc:Calleable{
         for(int i=0;i<ArgumentsID!.Count;i++){
                 Token ID=ArgumentsID[i];
                 object Value=Arguments[i];
-                CompilatorRef.ProgramEnvironment.Assign(ID,new Variable(ID,Value,null,CompilatorRef));
+                CompilatorRef.ProgramEnvironment.Assign(ID,new UknownValue(Value));
         }
         
 

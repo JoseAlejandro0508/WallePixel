@@ -5,13 +5,29 @@ public class Compiling
 
     public Environment ProgramEnvironment;
     public List<Error> CE;
-    List<Statement> Declarations;
+    private List<Statement> Declarations=new List<Statement>();
+    public int PosInterp=0;
     public Parser parser;
     public Compiling(Environment env, List<Error> CE, Parser parser)
     {
         ProgramEnvironment = env;
         this.CE = CE;
         this.parser = parser;
+    }
+    public void Interprete(){
+        if(CE.Count!=0){
+            CE.Add(new Error("Hay errores no es posible compilar", null));
+            return;
+        }
+        while(PosInterp<Declarations.Count){
+            Declarations[PosInterp].Execute();
+            if(CE.Count!=0){
+                return;
+
+            }
+            PosInterp++;
+        }
+
     }
     public void GetAllDeclarations(){
         while(!parser.Stream.EOF){
@@ -50,6 +66,11 @@ public class Compiling
         {
             return Declaration!;
         }
+        if (GoToParse(out Declaration))
+        {
+            return Declaration!;
+        }
+
 
     
 
@@ -122,9 +143,7 @@ public class Compiling
 
         }
 
-
-        Variable var_ = new Variable(ID, value , OP,this);
-        Declaration_ = new VariableAssign(this, var_);
+        Declaration_ = new VariableAssign(this, value,ID,OP);
         parser.Stream.Next();
         return true;
 
@@ -136,12 +155,13 @@ public class Compiling
     {
         Declaration_=null;
         List<Statement?>statements = new List<Statement?>();
-
+        if(!parser.Stream.EOF && parser.Stream.EOL)parser.Stream.Next();
         if(!parser.Stream.Match([TokenIDS.OpenBlock])){
             return false;
         }
         parser.Stream.Next();
-        while(!parser.Stream.EOF && !parser.Stream.Match([TokenIDS.OpenBlock])){
+        if(!parser.Stream.EOF && parser.Stream.EOL)parser.Stream.Next();
+        while(!parser.Stream.EOF && !parser.Stream.Match([TokenIDS.CloseBlock])){
             statements.Add(Declaration());
 
 
@@ -209,13 +229,9 @@ public class Compiling
 
         }
 
-        if(parser.Stream.EOL){
-            Declaration_=new IF(this,IFBlockDeclaration!,ELSEBlockDeclaration,Condition,OP);
-            return true;
-        }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
-        parser.Stream.Syncronize();
-        return false;
+
+        Declaration_=new IF(this,IFBlockDeclaration!,ELSEBlockDeclaration,Condition,OP);
+        return true;
 
 
     }
@@ -256,17 +272,12 @@ public class Compiling
         }
 
 
-        if(parser.Stream.EOL){
-            Declaration_=new WhileBucle(this,Body!,Condition,OP);
-            return true;
-        }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
-        parser.Stream.Syncronize();
-        return false;
+        Declaration_=new WhileBucle(this,Body! as Block,Condition,OP);
+        return true;
 
 
     }
-    /*
+    
     public bool GoToParse(out Statement? Declaration_)
     {
         
@@ -283,7 +294,7 @@ public class Compiling
             parser.Stream.Syncronize();
             return false;
         }
-        parser.Stream.Next();
+
         
         if(parser.Stream.Current.Type!=TokenType.Tag){
             CE.Add(new Error("Se esperaba una etiqueta", parser.Stream.Current.Position));
@@ -296,38 +307,25 @@ public class Compiling
 
         
         BasicValue Condition = parser.ParseExpression();
-        if(!(Condition is BasicValue<bool>)){
-            CE.Add(new Error("El bucle GoTO solo acepta parametros de tipo booleanos", parser.Stream.Current.Position));
-            parser.Stream.Syncronize();
-            return false;
-        }
-        if(!(Condition as BasicValue<bool>).CheckSemantic(CE)){
-            CE.Add(new Error("Error en la condicion del bucle GoTO", parser.Stream.Current.Position));
-            parser.Stream.Syncronize();
-            return false;
-        }
-        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle GoTo invalida se esperaba )")){
+
+        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle GoTo invalida se esperaba )",initialAdvance:false)){
             parser.Stream.Syncronize();
             return false;
         }
         
-        Statement Body=null;
-        if(!BlockParse(out Body)){
-            CE.Add(new Error("Error de sintaxis en la declaracion del bloque while", parser.Stream.Current.Position));
-            return false;
-        }
+
 
 
         if(parser.Stream.EOL){
-            Declaration_=new WhileBucle(this,Body,Condition as BasicValue<bool>,OP);
+            Declaration_=new GOTOBucle(this,Condition,OP,TagID);
             return true;
         }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque }", parser.Stream.Current.Position));
+        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del GoTo", parser.Stream.Current.Position));
         parser.Stream.Syncronize();
         return false;
 
 
-    }*/
+    }
     public bool FunctionParse(out Statement? Declaration_)
     {
         Declaration_=null;
@@ -435,13 +433,9 @@ public class Compiling
             return false;
         }
         DefinedFunc func=new DefinedFunc(Caller,this,(Body as Block)!,Arguments); 
-        if(parser.Stream.EOL){
-            Declaration_=new FunctionAsign(this,Caller,Asign,func);
-            return true;
-        }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
-        parser.Stream.Syncronize();
-        return false;
+
+        Declaration_=new FunctionAsign(this,Caller,Asign,func);
+        return true;
 
 
     }

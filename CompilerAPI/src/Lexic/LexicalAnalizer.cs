@@ -1,7 +1,7 @@
 public class LexicalAnalizer{
-    public List<Token>Tokens=new List<Token>();
+    public List<Token> Tokens=new List<Token>();
     public TokenReader Reader;
-    public LexicDates_ LexicDates=new LexicDates_();
+
     public LexicalAnalizer(string filename,string code){
         Reader = new TokenReader(filename,code);
    
@@ -33,6 +33,16 @@ public class LexicalAnalizer{
                     Tokens.Add(new Token(Reader.CodeLocation,TokenType.Tag,Value_));
                     continue;
                 }
+                if(Reader.PointerValue=='('){
+                    Tokens.Add(new Token(Reader.CodeLocation,TokenType.Function,Value_));
+                    continue;
+
+                }
+                if(Reader.PointerValue==']'){
+                    Tokens.Add(new Token(Reader.CodeLocation,TokenType.Tag,Value_));
+                    continue;
+
+                }
                 Tokens.Add(new Token(Reader.CodeLocation,TokenType.Variable,Value_));
                 
                 continue;
@@ -52,6 +62,7 @@ public class LexicalAnalizer{
                 if(Reader.Match(oper)){
                     Tokens.Add(new Token(Reader.CodeLocation,TokenType.Symbol,oper)); 
                     Matched=true;
+                    Reader.initWord=true;
                     continue;
                 }
 
@@ -76,7 +87,7 @@ public class LexicalAnalizer{
         private int posLastLine;
         private string filename;
         private string code;
-        private bool initWord=true;
+        public bool initWord=true;
         public int TokensInLine=0;
         public Location CodeLocation{
             get{
@@ -158,7 +169,7 @@ public class LexicalAnalizer{
                 MovePointer();
             }
             if(Value_.Length>0)TokensInLine++;
-            initWord=true;
+            //initWord=true;
             return  Value_.Length>0;
         }
         public bool ReadNumber(out string Number){
@@ -171,7 +182,7 @@ public class LexicalAnalizer{
             if(Number.Length>0)TokensInLine++;
             return Number.Length>0;
         }
-        public bool ReadString(out string StringVal,List<Error>CompilationErrors){
+        public bool ReadString(out string StringVal,List<Error> CompilationErrors){
             
             StringVal="";
             WhiteSpaceMove();

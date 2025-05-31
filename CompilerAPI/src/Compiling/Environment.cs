@@ -1,7 +1,7 @@
 public class Environment{
-    public Dictionary <string,Variable> Memory=new Dictionary <string, Variable> ();
+    public Dictionary <string,BasicValue> Memory=new Dictionary <string, BasicValue> ();
     public Dictionary <string,Calleable> GlobalFunctions=new Dictionary <string, Calleable> ();
-    public List<Token> Tags=new List<Token>();
+    public Dictionary<string,int> Tags=new Dictionary<string,int> ();
     public List<Error> CE;
     public Environment? Enclosing;
 
@@ -30,7 +30,7 @@ public class Environment{
         }
 
     }
-    public void Assign(Token ID, Variable value){
+    public void Assign(Token ID, BasicValue value){
         if(Enclosing!=null && !Memory.ContainsKey(ID.Value)){
 
             Enclosing.Assign (ID, value);
@@ -44,7 +44,7 @@ public class Environment{
         
 
     }
-    public bool Get(Token ID,out Variable? Value){
+    public bool Get(Token ID,out BasicValue? Value){
         if(Enclosing!=null){
             if(Enclosing.Get(ID,out Value)){
                 return true;
@@ -59,7 +59,7 @@ public class Environment{
         return true;
 
     }
-    public bool Check(Token ID,out Variable? Value){
+    public bool Check(Token ID,out BasicValue? Value){
         if(Enclosing!=null){
             if(Enclosing.Check(ID,out Value)){
                 return true;
@@ -75,20 +75,26 @@ public class Environment{
 
     }
     public bool CheckTag(Token ID){
-        foreach(Token Tag in Tags){
-            if(ID.Value==Tag.Value){
-                return true;
-            }
-        }
-        return false;
+
+        return Tags.ContainsKey(ID.Value);
 
     }
-    public bool AddTag(Token ID){
+    public bool AddTag(Token ID,int pos){
         if(CheckTag(ID)){
             CE.Add(new Error("La etiqueta ya existe en memoria",ID.Position));
             return false;
         }
-        Tags.Add(ID);
+        Tags[ID.Value]=pos;
+        return true;
+
+    }
+    public bool GetTagPos(Token ID, out int Pos){
+        Pos=0;
+        if(!CheckTag(ID)){
+            CE.Add(new Error("La etiqueta NO existe en memoria",ID.Position));
+            return false;
+        }
+        Pos=Tags[ID.Value];
         return true;
 
     }

@@ -1,3 +1,4 @@
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.Intrinsics.Arm;
 
 public class Block:Statement{
@@ -17,6 +18,10 @@ public class Block:Statement{
             if(s is null)continue;
             
             s.Execute();
+            if(CompilatorRef.CE.Count!=0){
+                return;
+
+            }
             
 
         }

@@ -8,6 +8,6 @@ class TagAsignament:Statement{
     }
     public override void Execute()
     {
-        CompilatorRef.ProgramEnvironment.AddTag(TagID);
+        CompilatorRef.ProgramEnvironment.AddTag(TagID,CompilatorRef.PosInterp);
     }
 }

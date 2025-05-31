@@ -9,6 +9,7 @@ public class Parser{
         ProgramEnvironment = env;
         this.Stream = Stream;
         this.CE = CE;
+    
 
     }
 
@@ -215,12 +216,7 @@ public class Parser{
 
         }
         if(Stream.Current.Type==TokenType.Variable){
-            Variable Value;
-            if(!ProgramEnvironment.Get(Stream.Current,out Value)){
-                CE.Add(new Error($"La variable {Stream.Current.Value} no ha sido asignada",Stream.Current.Position));
-                throw new Exception("Variable no asignada");
-            }
-
+            Variable Value=new Variable(Stream.Current,ProgramEnvironment);
             Stream.Next();
             return Value ;
 
