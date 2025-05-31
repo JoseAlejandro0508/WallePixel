@@ -1,8 +1,10 @@
 public class LexicalAnalizer{
     public List<Token>Tokens=new List<Token>();
     public TokenReader Reader;
+    public LexicDates_ LexicDates=new LexicDates_();
     public LexicalAnalizer(string filename,string code){
         Reader = new TokenReader(filename,code);
+   
         LexicDates.InitLexic();
 
     }
@@ -156,6 +158,7 @@ public class LexicalAnalizer{
                 MovePointer();
             }
             if(Value_.Length>0)TokensInLine++;
+            initWord=true;
             return  Value_.Length>0;
         }
         public bool ReadNumber(out string Number){

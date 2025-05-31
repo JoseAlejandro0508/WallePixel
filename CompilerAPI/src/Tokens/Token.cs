@@ -6,7 +6,7 @@ public class Token{
 
         Position = position;
         Type = type;
-        Value = value;
+        Value = value.ToString();
     }
 
 
@@ -31,6 +31,7 @@ public enum TokenType{
     Symbol,
     EOL,
     EOF,
+    Function
 
     
 }

@@ -1,10 +1,10 @@
 using System.Runtime.Intrinsics.Arm;
 
-class Block:Statement{
-    public List<Statement> Declarations;
+public class Block:Statement{
+    public List<Statement?> Declarations;
     
 
-    public Block(Compiling CR,List<Statement>  Declarations) :base(CR){
+    public Block(Compiling CR,List<Statement?>  Declarations) :base(CR){
         this.Declarations=Declarations;
         
 
@@ -12,8 +12,12 @@ class Block:Statement{
     public override void Execute()
     {
         //CompilatorRef.ProgramEnvironment.AddEnclosing();
-        foreach (Statement s in Declarations){
+        foreach (Statement? s in Declarations)
+        {
+            if(s is null)continue;
+            
             s.Execute();
+            
 
         }
     }

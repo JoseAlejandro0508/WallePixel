@@ -5,6 +5,7 @@ public class Compiling
 
     public Environment ProgramEnvironment;
     public List<Error> CE;
+    List<Statement> Declarations;
     public Parser parser;
     public Compiling(Environment env, List<Error> CE, Parser parser)
     {
@@ -12,27 +13,45 @@ public class Compiling
         this.CE = CE;
         this.parser = parser;
     }
-    public Statement Declaration()
+    public void GetAllDeclarations(){
+        while(!parser.Stream.EOF){
+            Statement? Dec=Declaration();
+            if(Dec is null)continue;
+            Declarations.Add(Dec);
+                
+        }
+
+    }
+    public Statement? Declaration()
     {
-        Statement Declaration=null;
+        int ActualPos=parser.Stream.GetPos();
+        Statement? Declaration=null;
         if (TagParse(out Declaration))
         {
-            return Declaration;
+            return Declaration!;
         }
         if (VariableAssignParse(out Declaration))
         {
-            return Declaration;
+            return Declaration!;
         }
         if (IFParse(out Declaration))
         {
-            return Declaration;
+            return Declaration!;
         }
         if (WhileParse(out Declaration))
         {
-            return Declaration;
+            return Declaration!;
+        }
+        if (FunctionParse(out Declaration))
+        {
+            return Declaration!;
+        }
+        if (FunDeclarationParse(out Declaration))
+        {
+            return Declaration!;
         }
 
-
+    
 
         if(!parser.Stream.EOL){
             CE.Add(new Error($"Declaracion no reconocida", parser.Stream.Current.Position));
@@ -45,11 +64,12 @@ public class Compiling
         }
 
 
+
         return Declaration;
 
 
     }
-    public bool TagParse(out Statement Declaration){
+    public bool TagParse(out Statement? Declaration){
         Declaration = null;
         if (parser.Stream.Current.Type != TokenType.Tag)
         {
@@ -64,12 +84,13 @@ public class Compiling
 
         }
         Declaration=new TagAsignament(this,TagID);
+        parser.Stream.Next();
         return true;
 
         
     }
 
-    public bool VariableAssignParse(out Statement Declaration_)
+    public bool VariableAssignParse(out Statement? Declaration_)
     {
         Declaration_= null;
         if (parser.Stream.Current.Type != TokenType.Variable)
@@ -77,12 +98,14 @@ public class Compiling
             return false;
         }
         Token ID = parser.Stream.Current;
-        if (!parser.Stream.Consume(TokenIDS.AssignatorOper, "Se esperaba el operador de asignacion")) {
+        parser.Stream.Next();
+        Token OP = parser.Stream.Current;
+        if (!parser.Stream.Consume(TokenIDS.AssignatorOper, "Se esperaba el operador de asignacion",initialAdvance:false)) {
             parser.Stream.Syncronize();
             return false;
             
         }
-        Token OP = parser.Stream.Current;
+        
         BasicValue value;
         try{
             value = parser.ParseExpression();
@@ -101,22 +124,18 @@ public class Compiling
 
 
         Variable var_ = new Variable(ID, value , OP,this);
-        if(!var_.CheckSemantic(CE)){
-                parser.Stream.Syncronize();
-                return false;
-        }
         Declaration_ = new VariableAssign(this, var_);
-            
+        parser.Stream.Next();
         return true;
 
 
 
 
     }
-    public bool BlockParse(out Statement Declaration_)
+    public bool BlockParse(out Statement? Declaration_)
     {
         Declaration_=null;
-        List<Statement>statements = new List<Statement>();
+        List<Statement?>statements = new List<Statement?>();
 
         if(!parser.Stream.Match([TokenIDS.OpenBlock])){
             return false;
@@ -124,6 +143,7 @@ public class Compiling
         parser.Stream.Next();
         while(!parser.Stream.EOF && !parser.Stream.Match([TokenIDS.OpenBlock])){
             statements.Add(Declaration());
+
 
         }
         if(!parser.Stream.Match([TokenIDS.CloseBlock])){
@@ -137,16 +157,16 @@ public class Compiling
                 parser.Stream.Next();
 
             }
-           
+        
             return true;
         }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque }", parser.Stream.Current.Position));
+        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque", parser.Stream.Current.Position));
         parser.Stream.Syncronize();
         return false;
 
 
     }
-    public bool IFParse(out Statement Declaration_)
+    public bool IFParse(out Statement? Declaration_)
     {
         Declaration_=null;
 
@@ -159,28 +179,26 @@ public class Compiling
             parser.Stream.Syncronize();
             return false;
         }
-        BasicValue Condition = parser.ParseExpression();
-        if(!(Condition is BasicValue<bool>)){
-            CE.Add(new Error("El condicional if solo acepta parametros de tipo booleanos", parser.Stream.Current.Position));
+
+        BasicValue Condition ;
+        try{
+            Condition= parser.ParseExpression();
+        }catch{
             parser.Stream.Syncronize();
             return false;
         }
-        if(!(Condition as BasicValue<bool>).CheckSemantic(CE)){
-            CE.Add(new Error("Error en la condicion del condicional", parser.Stream.Current.Position));
-            parser.Stream.Syncronize();
-            return false;
-        }
-        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del condicional if invalida se esperaba (")){
+
+        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del condicional if invalida se esperaba (",initialAdvance:false)){
             parser.Stream.Syncronize();
             return false;
         }
         
-        Statement IFBlockDeclaration=null;
+        Statement? IFBlockDeclaration;
         if(!BlockParse(out IFBlockDeclaration)){
             CE.Add(new Error("Error de sintaxis en la declaracion del bloque del condicional if", parser.Stream.Current.Position));
             return false;
         }
-        Statement ELSEBlockDeclaration=null;
+        Statement? ELSEBlockDeclaration=null;
         
         if(parser.Stream.Match([TokenIDS.ELSE])){
             parser.Stream.Next();
@@ -192,16 +210,16 @@ public class Compiling
         }
 
         if(parser.Stream.EOL){
-            Declaration_=new IF(this,IFBlockDeclaration,ELSEBlockDeclaration,Condition as BasicValue<bool>,OP);
+            Declaration_=new IF(this,IFBlockDeclaration!,ELSEBlockDeclaration,Condition,OP);
             return true;
         }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque }", parser.Stream.Current.Position));
+        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
         parser.Stream.Syncronize();
         return false;
 
 
     }
-    public bool WhileParse(out Statement Declaration_)
+    public bool WhileParse(out Statement? Declaration_)
     {
         Declaration_=null;
 
@@ -216,23 +234,22 @@ public class Compiling
             parser.Stream.Syncronize();
             return false;
         }
-        BasicValue Condition = parser.ParseExpression();
-        if(!(Condition is BasicValue<bool>)){
-            CE.Add(new Error("El bucle while solo acepta parametros de tipo booleanos", parser.Stream.Current.Position));
+        BasicValue Condition;
+        try{
+            Condition= parser.ParseExpression();
+
+        }catch{
             parser.Stream.Syncronize();
             return false;
+            
         }
-        if(!(Condition as BasicValue<bool>).CheckSemantic(CE)){
-            CE.Add(new Error("Error en la condicion del bucle while", parser.Stream.Current.Position));
-            parser.Stream.Syncronize();
-            return false;
-        }
-        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle while invalida se esperaba )")){
+
+        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle while invalida se esperaba )",initialAdvance:false)){
             parser.Stream.Syncronize();
             return false;
         }
         
-        Statement Body=null;
+        Statement? Body=null;
         if(!BlockParse(out Body)){
             CE.Add(new Error("Error de sintaxis en la declaracion del bloque while", parser.Stream.Current.Position));
             return false;
@@ -240,17 +257,19 @@ public class Compiling
 
 
         if(parser.Stream.EOL){
-            Declaration_=new WhileBucle(this,Body,Condition as BasicValue<bool>,OP);
+            Declaration_=new WhileBucle(this,Body!,Condition,OP);
             return true;
         }
-        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque }", parser.Stream.Current.Position));
+        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
         parser.Stream.Syncronize();
         return false;
 
 
     }
-    public bool GoToParse(out Statement Declaration_)
+    /*
+    public bool GoToParse(out Statement? Declaration_)
     {
+        
         Declaration_=null;
 
 
@@ -308,7 +327,125 @@ public class Compiling
         return false;
 
 
+    }*/
+    public bool FunctionParse(out Statement? Declaration_)
+    {
+        Declaration_=null;
+
+
+        if(parser.Stream.Current.Type!=TokenType.Function){
+            return false;
+        }
+
+        Token Caller=parser.Stream.Current;
+
+        if(!parser.Stream.Consume(TokenIDS.OpenParenteses,"Sintaxis del llamado invalido se esperaba (")){
+            parser.Stream.Syncronize();
+            return false;
+        }
+        List<BasicValue>Arguments=new List<BasicValue>();
+        BasicValue arg;
+        try{
+            arg= parser.ParseExpression();
+
+        }catch{
+            parser.Stream.Syncronize();
+            return false;
+            
+        }
+        Arguments.Add(arg);
+        while(parser.Stream.Match([TokenIDS.SeparatorParam])){
+            parser.Stream.Next();
+
+            try{
+                arg= parser.ParseExpression();
+            }catch{
+                parser.Stream.Syncronize();
+                return false;
+            }
+        }
+
+        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle while invalida se esperaba )",initialAdvance:false)){
+            parser.Stream.Syncronize();
+            return false;
+        }
+    
+
+        if(parser.Stream.EOL){
+            Declaration_=new FunctionCall(this,Caller,Arguments);
+            return true;
+        }
+        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
+        parser.Stream.Syncronize();
+        return false;
+
+
     }
+    public bool FunDeclarationParse(out Statement? Declaration_)
+    {
+        Declaration_=null;
+        if(!parser.Stream.Match([TokenIDS.FUNASIGN])){
+            return false;
+        }
+        Token Asign=parser.Stream.Current;
+        parser.Stream.Next();
+
+        if(parser.Stream.Current.Type!=TokenType.Function){
+            return false;
+        }
+        
+        Token Caller=parser.Stream.Current;
+
+        if(!parser.Stream.Consume(TokenIDS.OpenParenteses,"Sintaxis de declaracion invalida se esperaba (")){
+            parser.Stream.Syncronize();
+            return false;
+        }
+        List<Token>Arguments=new List<Token>();
+        Token arg;
+        try{
+            arg= parser.Stream.Current;
+
+        }catch{
+            parser.Stream.Syncronize();
+            return false;
+            
+        }
+
+        Arguments.Add(arg);
+        parser.Stream.Next();
+        while(parser.Stream.Match([TokenIDS.SeparatorParam])){
+            parser.Stream.Next();
+
+            try{
+                arg=parser.Stream.Current ;
+            }catch{
+                parser.Stream.Syncronize();
+                return false;
+            }
+            parser.Stream.Next();
+        }
+
+        if(!parser.Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle while invalida se esperaba )",initialAdvance:false)){
+            parser.Stream.Syncronize();
+            return false;
+        }
+        Statement? Body=null;
+        if(!BlockParse(out Body)){
+            CE.Add(new Error("Error de sintaxis en la declaracion de la funcion", parser.Stream.Current.Position));
+            return false;
+        }
+        DefinedFunc func=new DefinedFunc(Caller,this,(Body as Block)!,Arguments); 
+        if(parser.Stream.EOL){
+            Declaration_=new FunctionAsign(this,Caller,Asign,func);
+            return true;
+        }
+        CE.Add(new Error($"No debe escribir nada a continuacion del cierre del bloque ", parser.Stream.Current.Position));
+        parser.Stream.Syncronize();
+        return false;
+
+
+    }
+
 
 
 

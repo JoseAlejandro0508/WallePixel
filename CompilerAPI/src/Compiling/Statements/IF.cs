@@ -1,10 +1,10 @@
 class IF:Statement{
     public Statement IfThen;
-    public Statement ElseThen;
+    public Statement? ElseThen;
     public BasicValue Condition;
     Token IFID;
 
-    public IF(Compiling CR,Statement IfThen,Statement ElseThen,BasicValue Condition,Token IFID) :base(CR){
+    public IF(Compiling CR,Statement IfThen,Statement? ElseThen,BasicValue Condition,Token IFID) :base(CR){
         this.IfThen=IfThen;
         this.ElseThen=ElseThen;
         this.Condition=Condition;

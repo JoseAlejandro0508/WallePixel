@@ -1,31 +1,50 @@
 public class Environment{
     public Dictionary <string,Variable> Memory=new Dictionary <string, Variable> ();
+    public Dictionary <string,Calleable> GlobalFunctions=new Dictionary <string, Calleable> ();
     public List<Token> Tags=new List<Token>();
     public List<Error> CE;
-    public Environment Enclosing;
+    public Environment? Enclosing;
 
-    public Environment (){
+    public Environment(List<Error> CE){
+        this.CE= CE;
         Enclosing=null;
     }
-    public Environment (Environment enclosing){
+    public Environment (Environment enclosing,List<Error> CE){
+        this.CE= CE;
         Enclosing=enclosing;
     }
     public void AddEnclosing(){
         if(Enclosing==null){
-            Enclosing=new Environment ();
+            Enclosing=new Environment (CE);
         }else{
-            Enclosing.Enclosing=new Environment();
+            Enclosing.Enclosing=new Environment(CE);
+        }
+
+    }
+    public void CloseEnclosing(){
+        if(Enclosing!=null){
+            Enclosing.Enclosing=null;
+
+        }else{
+            Enclosing=null;
         }
 
     }
     public void Assign(Token ID, Variable value){
-        if(Enclosing!=null){
+        if(Enclosing!=null && !Memory.ContainsKey(ID.Value)){
+
             Enclosing.Assign (ID, value);
+
+        }else{
+            Memory[ID.Value]=value;
+
         }
-        Memory[ID.Value]=value;
+        
+        
+        
 
     }
-    public bool Get(Token ID,out Variable Value){
+    public bool Get(Token ID,out Variable? Value){
         if(Enclosing!=null){
             if(Enclosing.Get(ID,out Value)){
                 return true;
@@ -40,9 +59,9 @@ public class Environment{
         return true;
 
     }
-    public bool Check(Token ID,out Variable Value){
+    public bool Check(Token ID,out Variable? Value){
         if(Enclosing!=null){
-            if(Enclosing.Get(ID,out Value)){
+            if(Enclosing.Check(ID,out Value)){
                 return true;
             }
         }
@@ -71,6 +90,29 @@ public class Environment{
         }
         Tags.Add(ID);
         return true;
+
+    }
+    public bool DefineFunc(Token ID,Calleable Func){
+        if(Enclosing!=null){
+            CE.Add(new Error("No se pueden definir funciones en un bloque ",ID.Position));
+            return false;
+        }
+        if(GlobalFunctions.ContainsKey(ID.Value)){
+            CE.Add(new Error("Ya existe una definicion para esa funcion",ID.Position));
+            return false;
+        }
+        GlobalFunctions[ID.Value]=Func;
+        return true;
+
+    }
+    public Calleable? GetFunc(Token ID){
+
+        if(!GlobalFunctions.ContainsKey(ID.Value)){
+            CE.Add(new Error($"No existe se ha definido la funcion {ID.Value}",ID.Position));
+            return null;
+        }
+        return GlobalFunctions[ID.Value];
+    
 
     }
 

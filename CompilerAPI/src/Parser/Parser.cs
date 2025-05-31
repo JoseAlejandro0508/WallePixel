@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 
 public class Parser{
     public List<Error>  CE;
+    public Compiling CR;
     public TokenStream Stream;
     public Environment ProgramEnvironment;
     public Parser(TokenStream Stream,List<Error> CE,Environment env){
@@ -224,11 +225,73 @@ public class Parser{
             return Value ;
 
         }
-        Number number=new Number(Stream.Current);
+        if(Stream.Current.Type==TokenType.Function){
+            return ParseFunction();
+           
+        }
+        BasicValue? Unary=null;
+        if(Stream.Current.Type==TokenType.Number){
+            Unary=new Number(Stream.Current);
+        }
+        if(Stream.Current.Type==TokenType.Bool){
+            Unary=new Boolean(Stream.Current);
+        }
+        if(Stream.Current.Type==TokenType.String){
+            Unary=new String(Stream.Current);
+        }
+        if(Unary ==null){
+            CE.Add(new Error("Se esperaba un valor",Stream.Current.Position));
+            throw new Exception("Se esperaba un valor");
+        }
+        Stream.Next();
+
+        return Unary;
+    }
+    public BasicValue ParseFunction(){
+        Token Caller=Stream.Current;
+        Stream.Next();
+
+        if(!Stream.Consume(TokenIDS.OpenParenteses,"Sintaxis del llamado invalido se esperaba (")){
+            throw new Exception("Se esperaba un (");
+        }
+        List<BasicValue>Arguments=new List<BasicValue>();
+        BasicValue arg;
+        try{
+            arg= ParseExpression();
+
+        }catch{
+            throw new Exception("Error al obtener argumento");
+ 
+        }
+        Arguments.Add(arg);
+        while(Stream.Match([TokenIDS.SeparatorParam])){
+            Stream.Next();
+
+            try{
+                arg= ParseExpression();
+            }catch{
+                throw new Exception("Error al obtener argumento");
+            }
+        }
+
+        if(!Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle while invalida se esperaba )",initialAdvance:false)){
+            throw new Exception("Se esperaba un )");
+
+        }
+        Calleable? calleable=CR.ProgramEnvironment.GetFunc(Caller);
+        if(calleable==null){
+            throw new Exception("Funcion no definida");
+        }
+        calleable.Execute(Arguments);
+        if(calleable.Value==null){
+            CE.Add(new Error($"Se esperaba un valor devuelto por la funcion {Caller.Value}",Stream.Current.Position));
+            throw new Exception("Se esperaba un valor devuelto por la funcion");
+        }
+
        
         Stream.Next();
 
-        return number;
+        return new UknownValue(calleable.Value);
     }
     
 

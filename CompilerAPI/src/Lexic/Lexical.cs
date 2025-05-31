@@ -1,22 +1,22 @@
-public static class LexicDates{
-    public static Dictionary<string,TokenInfo>Keywords=new Dictionary<string, TokenInfo>();
-    public static Dictionary<string,TokenInfo>Bucles=new Dictionary<string, TokenInfo>();
-    public static Dictionary<string,TokenInfo>Operators=new Dictionary<string, TokenInfo>();
+public  class LexicDates_{
+    public  Dictionary<string,TokenInfo> Keywords=new Dictionary<string, TokenInfo>();
+    public  Dictionary<string,TokenInfo> Bucles=new Dictionary<string, TokenInfo>();
+    public  Dictionary<string,TokenInfo> Operators=new Dictionary<string, TokenInfo>();
     
     
 
-    public static void RegisterKeyword(string keyword,TokenInfo Info){
-        Keywords[keyword]= Info;
+    public  void RegisterKeyword(string keyword,TokenInfo Info){
+        this.Keywords[keyword]= Info;
     }
-    public static void RegisterBucle(string Bucle,TokenInfo Info){
-        Bucles[Bucle]= Info;
+    public void RegisterBucle(string Bucle,TokenInfo Info){
+        this.Bucles[Bucle]= Info;
     }
-    public static void RegisterOperator(string Oper,TokenInfo Info){
-        Operators[Oper]= Info;
+    public  void RegisterOperator(string Oper,TokenInfo Info){
+        this.Operators[Oper]= Info;
     }
 
 
-    public static void InitLexic(){
+    public void InitLexic(){
 
         RegisterKeyword("Spawn",new TokenInfo(TokenIDS.SpawnFunc));
         RegisterKeyword("Color",new TokenInfo(TokenIDS.ColorFunc));
@@ -128,4 +128,6 @@ public enum TokenIDS{
 
     IF,//if
     ELSE,//else
+
+    FUNASIGN,
 }

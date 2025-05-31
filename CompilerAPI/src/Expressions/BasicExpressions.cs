@@ -5,7 +5,7 @@ public interface IValue{
     public abstract void GetValue(List<Error> CE);
 }
 public abstract class BasicValue:IValue{
-    public object Value;
+    public object? Value;
     public Location Location_;
     public abstract void GetValue(List<Error> CE);
     public abstract bool CheckSemantic(List<Error> ComplierErrors);
@@ -82,11 +82,11 @@ public abstract class BinaryExpression:BasicValue{
 
 public class Variable:BasicValue{
     public Token ID;
-    public Token Asignator;
-    public BasicValue PrimitiveValue;
+    public Token? Asignator;
+    public object PrimitiveValue;
     public Compiling CR;
 
-    public Variable(Token ID_,BasicValue Value_,Token Asignator,Compiling CR){
+    public Variable(Token ID_,object Value_,Token? Asignator,Compiling CR){
         PrimitiveValue=Value_;
         ID=ID_;
         Location_=ID.Position;
@@ -96,13 +96,17 @@ public class Variable:BasicValue{
     }
     public override void GetValue(List<Error> CE){
 
-        this.Value=PrimitiveValue.Value;
+        if(PrimitiveValue is ValueType){
+            this.Value=PrimitiveValue;
+            return;
+        }
+        this.Value=(PrimitiveValue as BasicValue).Value;
 
 
 
     }
     public override bool CheckSemantic(List<Error> CE){
-        Variable var_=null;
+        Variable? var_=null;
         if(CR.ProgramEnvironment.Check(ID,out var_)){
             bool result=var_.CheckSemantic(CE);
             if(!result)return false;
@@ -110,8 +114,9 @@ public class Variable:BasicValue{
 
            
         }
-        if(!PrimitiveValue.CheckSemantic(CE)){
-            CE.Add(new Error("Error al obtener el valor asociado a la variable",PrimitiveValue.Location_));
+   
+        if(PrimitiveValue is not ValueType && !(PrimitiveValue as BasicValue).CheckSemantic(CE)){
+            CE.Add(new Error("Error al obtener el valor asociado a la variable",ID.Position));
             return false;
         };
         try{
@@ -128,34 +133,3 @@ public class Variable:BasicValue{
     }
 
 }
-public abstract class Function<OUT>:BasicValue<OUT>{
-    public List<Type> TypesNedded;
-    public List<object> Params;
-    
-    public Function(List<Type> TypesNedded_, List<object> Params_){
-        TypesNedded=TypesNedded_;
-        Params=Params_;
-    
-    }
-    public override bool CheckSemantic(List<Error> ComplierErrors){
-        if(Params.Count!=TypesNedded.Count){
-            ComplierErrors.Add(new Error($"Se esperaban {TypesNedded.Count} parametros y se recibieron {Params.Count}",Location_));
-            return false;
-
-        }
-        for(int i=0;i<TypesNedded.Count;i++){
-            if(TypesNedded[i]!=Params[i].GetType()){
-                ComplierErrors.Add(new Error($"Se esperaban en el parametro {i} un tipo {TypesNedded[i].ToString()} parametros y se recibio un tipo {Params[i].GetType().ToString()}",Location_));
-                return false;
-            
-            }
-        }
-
-        return true;
-
-    }
-    
-}
-
-
-
