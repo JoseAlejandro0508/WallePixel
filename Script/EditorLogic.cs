@@ -9,6 +9,7 @@ public partial class EditorLogic : CodeEdit
         {"GoTo", Colors.Purple},
         {"if", Colors.Purple},
         {"else", Colors.Purple},
+        {"return", Colors.Red},
 
         
 

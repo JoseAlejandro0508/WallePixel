@@ -11,3 +11,7 @@ Se agrego :
 -Uso de la funcion nativa print() para imprimir en consola
 -Compilacion en tiempo real,desactivable en el menu
 -Higlighting
+
+## Requerimientos para ejecutar
+
+Godot
