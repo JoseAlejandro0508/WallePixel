@@ -13,6 +13,7 @@ public class DefinedFunc:Calleable{
 
     }
     protected override void call(List<object> Arguments){
+  
         CompilatorRef.ProgramEnvironment.AddEnclosing();
 
         for(int i=0;i<ArgumentsID!.Count;i++){
@@ -21,8 +22,16 @@ public class DefinedFunc:Calleable{
                 CompilatorRef.ProgramEnvironment.Assign(ID,new UknownValue(Value));
         }
         
+        try{
+            Body!.Execute();
+        }catch(ReturnException e){
 
-        Body!.Execute();
+            CompilatorRef.ProgramEnvironment.CloseEnclosing();
+            throw new ReturnException(e.Value);
+            
+
+        }
+       
         CompilatorRef.ProgramEnvironment.CloseEnclosing();
 
         

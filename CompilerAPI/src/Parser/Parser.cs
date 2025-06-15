@@ -70,26 +70,26 @@ public class Parser{
             }
             if(Stream.Match([TokenIDS.LessEqualOper] )){
                 Stream.Next();
-                BasicValue right=ParseFactor();
+                BasicValue right=ParseTerm();
                 return new LessEqual(left,right,OP);
                 
             }
             if(Stream.Match([TokenIDS.LessOper] )){
                 Stream.Next();
-                BasicValue right=ParseFactor();
+                BasicValue right=ParseTerm();
                 return new Less(left,right,OP);
                 
 
             }
             if(Stream.Match([TokenIDS.MoreOper] )){
                 Stream.Next();
-                BasicValue right=ParseFactor();
+                BasicValue right=ParseTerm();
                 return new More(left,right,OP);
                 
             }
             if(Stream.Match([TokenIDS.EqualOper] )){
                 Stream.Next();
-                BasicValue right=ParseFactor();
+                BasicValue right=ParseTerm();
                 return new Equal(left,right,OP);
                 
             }
@@ -194,7 +194,7 @@ public class Parser{
             expr=ParseExpression();
     
             if(!Stream.Match([TokenIDS.CloseParenteses] )){
-                CE.Add(new Error("Se esperaba un cierre de parentesis )",Stream.Current.Position));
+                CE.Add(new Error("Se esperaba un cierre de parentesis )",Stream.Current.Position,ErrorType.SintacticError));
                 throw new Exception("Se esperaba un parentesis");
 
             }
@@ -211,7 +211,7 @@ public class Parser{
 
     public BasicValue ParseUnary(){
         if(Stream.EOL){
-            CE.Add(new Error("Se esperaba un token de formato numero",Stream.Current.Position));
+            CE.Add(new Error("Se esperaba un valor",Stream.Current.Position,ErrorType.SintacticError));
             throw new Exception("Se esperaba un Numero");
 
         }
@@ -222,7 +222,9 @@ public class Parser{
 
         }
         if(Stream.Current.Type==TokenType.Function){
-            return ParseFunction();
+            BasicValue Value=ParseFunction();
+            //Stream.Next();
+            return Value;
            
         }
         BasicValue? Unary=null;
@@ -235,8 +237,28 @@ public class Parser{
         if(Stream.Current.Type==TokenType.String){
             Unary=new String(Stream.Current);
         }
+        string value="";
+        while(Stream.Match([TokenIDS.AddOper,TokenIDS.RestOper])){
+            value+=Stream.Current.Value.ToString();
+            Stream.Next();
+
+        }
+        if(Stream.Current.Type==TokenType.Number){
+            value+=Stream.Current.Value;
+            
+            try{
+                Unary=new UknownValue(int.Parse(value));
+            }
+            catch{
+
+            }
+            
+        }
+
+        
+
         if(Unary ==null){
-            CE.Add(new Error("Se esperaba un valor",Stream.Current.Position));
+            CE.Add(new Error("Se esperaba un valor",Stream.Current.Position,ErrorType.SintacticError));
             throw new Exception("Se esperaba un valor");
         }
         Stream.Next();
@@ -245,21 +267,25 @@ public class Parser{
     }
     public BasicValue ParseFunction(){
         Token Caller=Stream.Current;
-        Stream.Next();
+
 
         if(!Stream.Consume(TokenIDS.OpenParenteses,"Sintaxis del llamado invalido se esperaba (")){
             throw new Exception("Se esperaba un (");
         }
         List<BasicValue>Arguments=new List<BasicValue>();
         BasicValue arg;
-        try{
-            arg= ParseExpression();
+        if (!Stream.Match([TokenIDS.CloseParenteses]))
+        {
+           
+            try{
+                arg= ParseExpression();
 
-        }catch{
-            throw new Exception("Error al obtener argumento");
- 
+            }catch{
+                throw new Exception("Error al obtener argumento");
+    
+            }
+            Arguments.Add(arg);
         }
-        Arguments.Add(arg);
         while(Stream.Match([TokenIDS.SeparatorParam])){
             Stream.Next();
 
@@ -270,24 +296,22 @@ public class Parser{
             }
         }
 
-        if(!Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis del bucle while invalida se esperaba )",initialAdvance:false)){
+        if(!Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis de la funcion invalida se esperaba )",initialAdvance:false)){
             throw new Exception("Se esperaba un )");
 
         }
-        Calleable? calleable=CR.ProgramEnvironment.GetFunc(Caller);
-        if(calleable==null){
-            throw new Exception("Funcion no definida");
-        }
-        calleable.Execute(Arguments);
-        if(calleable.Value==null){
+
+        //calleable.Execute(Arguments);
+        
+        /*if(calleable.Value==null){
             CE.Add(new Error($"Se esperaba un valor devuelto por la funcion {Caller.Value}",Stream.Current.Position));
             throw new Exception("Se esperaba un valor devuelto por la funcion");
-        }
+        }*/
 
        
-        Stream.Next();
 
-        return new UknownValue(calleable.Value);
+
+        return new FunctionCallExpr(ProgramEnvironment,Caller,Arguments);
     }
     
 

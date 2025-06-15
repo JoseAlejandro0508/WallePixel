@@ -13,8 +13,9 @@ public abstract class Calleable:Statement{
 
         Arguments = new List<object>();
         
-        if (Arguments_.Count == 0)
+
         if(Arguments_.Count!=MaxArguments){
+            CompilatorRef.CE.Add(new Error($"La funcion {Caller.Value} esperaba {MaxArguments} argumentos y recibio {Arguments_.Count}",Caller.Position,ErrorType.RuntimeError));
             return false;
         }
         foreach(BasicValue arg in Arguments_){

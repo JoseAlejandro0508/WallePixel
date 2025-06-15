@@ -8,7 +8,7 @@ public interface IValue
 public abstract class BasicValue : IValue
 {
     public object? Value;
-    public Location Location_;
+    public Location? Location_;
     public abstract void GetValue(List<Error> CE);
     public abstract bool CheckSemantic(List<Error> ComplierErrors);
 }
@@ -33,7 +33,7 @@ public abstract class PrimitiveDate : BasicValue
         }
         catch
         {
-            CE.Add(new Error($"Error,el valor {TokenValue.Value} no se corresponde con el formato de un numero", Location_));
+            CE.Add(new Error($"Error,el valor {TokenValue.Value} no se corresponde con el formato de dato esperado", Location_,ErrorType.SemanticError));
             return false;
 
         }
@@ -67,12 +67,12 @@ public abstract class BinaryExpression : BasicValue
         }
         if (!left.CheckSemantic(CE))
         {
-            CE.Add(new Error("Hay un error al obtener el valor de un operando", left.Location_));
+            CE.Add(new Error("Hay un error al obtener el valor de un operando", left.Location_,ErrorType.RuntimeError));
             return false;
         }
         if (!right.CheckSemantic(CE))
         {
-            CE.Add(new Error("Hay un error al obtener el valor de un operando", right.Location_));
+            CE.Add(new Error("Hay un error al obtener el valor de un operando", right.Location_,ErrorType.RuntimeError));
             return false;
         }
 
@@ -84,7 +84,7 @@ public abstract class BinaryExpression : BasicValue
         }
         catch
         {
-            CE.Add(new Error($"Error al ejecutar la operacion {Operator.Value}", Operator.Position));
+            CE.Add(new Error($"Error al ejecutar la operacion {Operator.Value}", Operator.Position,ErrorType.RuntimeError));
             return false;
 
         }
@@ -106,7 +106,7 @@ public class Variable : BasicValue
     {
 
         ID = ID_;
-        Location_ = ID.Position;
+        Location_= ID.Position;
         this.Env = Env;
 
 
@@ -139,14 +139,14 @@ public class Variable : BasicValue
             }
             catch
             {
-                CE.Add(new Error($"Error al obtener el valor de la variable {ID}", Location_));
+                CE.Add(new Error($"Error al obtener el valor de la variable {ID}", Location_,ErrorType.RuntimeError));
                 return false;
             }
 
 
         }
 
-        CE.Add(new Error($"La variable{ID.Value} no se encuetra en memoria", ID.Position));
+        CE.Add(new Error($"La variable{ID.Value} no se encuetra en memoria", ID.Position,ErrorType.RuntimeError));
 
 
         return false;

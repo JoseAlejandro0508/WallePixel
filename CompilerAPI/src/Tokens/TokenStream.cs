@@ -86,7 +86,7 @@ public class TokenStream
         TokenInfo check = null;
         if (!(LexicDates.Operators.TryGetValue(Current.Value, out check1) || LexicDates.Bucles.TryGetValue(Current.Value, out check2) || LexicDates.Keywords.TryGetValue(Current.Value, out check3)))
         {
-            CE.Add(new Error(MessageError, Current.Position));
+            CE.Add(new Error(MessageError, Current.Position,ErrorType.SintacticError));
             Syncronize();
             return false;
         }
@@ -101,7 +101,7 @@ public class TokenStream
             Next();
             return true;
         }
-        CE.Add(new Error(MessageError, Current.Position));
+        CE.Add(new Error(MessageError, Current.Position,ErrorType.SintacticError));
         Syncronize();
         return false;
     }
@@ -127,7 +127,7 @@ public class TokenStream
 
             if (tokenID != check!.tokenIDS)
             {
-                CE.Add(new Error(MessagesError[i], Current.Position));
+                CE.Add(new Error(MessagesError[i], Current.Position,ErrorType.SintacticError));
                 Syncronize();
                 return false;
             }

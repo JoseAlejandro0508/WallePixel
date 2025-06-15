@@ -1,8 +1,8 @@
 public class Token{
-    public Location Position{ get; private set; }
+    public Location? Position{ get; private set; }
     public TokenType Type{ get; private set; }
     public string Value{ get; private set; }
-    public Token(Location position, TokenType type, string value){
+    public Token(Location? position, TokenType type, string value){
 
         Position = position;
         Type = type;

@@ -1,0 +1,661 @@
+[gd_scene load_steps=24 format=3 uid="uid://by2s5ulamtm45"]
+
+[ext_resource type="Script" uid="uid://b1iqkdnq7yjxg" path="res://Script/Principal.cs" id="1_62e2m"]
+[ext_resource type="Script" uid="uid://su6shjvqcy2q" path="res://Script/BoardControl.cs" id="2_62e2m"]
+[ext_resource type="Script" uid="uid://c4aqo1c18kcn2" path="res://Script/EditorLogic.cs" id="3_fj5cn"]
+[ext_resource type="Texture2D" uid="uid://c001s26g5bldn" path="res://Textures/Icon set 1/1x/Asset 84.png" id="4_ee4bf"]
+[ext_resource type="Script" uid="uid://5viunrtjixn2" path="res://Script/ConsoleLogic.cs" id="4_iy58a"]
+[ext_resource type="Texture2D" uid="uid://c16rb7ritjekp" path="res://Textures/Icon set 1/0.5x/Asset 43@0.5x.png" id="5_kbped"]
+[ext_resource type="Texture2D" uid="uid://ck6fkcsvsks87" path="res://Textures/Icon set 1/0.5x/Asset 84@0.5x.png" id="5_ou021"]
+[ext_resource type="Texture2D" uid="uid://7vbfpahjkap8" path="res://Textures/Icon set 1/0.5x/Asset 28@0.5x.png" id="7_iy58a"]
+[ext_resource type="Texture2D" uid="uid://2rakk8mxcstk" path="res://Textures/Icon set 1/0.5x/Asset 26@0.5x.png" id="8_0ytqx"]
+[ext_resource type="Texture2D" uid="uid://x7y321br1u20" path="res://Textures/Icon set 1/0.5x/Asset 53@0.5x.png" id="9_3fl80"]
+[ext_resource type="Texture2D" uid="uid://d16iyef0kpskn" path="res://Textures/Icon set 1/0.5x/Asset 25@0.5x.png" id="9_pxugv"]
+[ext_resource type="Texture2D" uid="uid://os5mvnedq8fc" path="res://Textures/Icon set 1/0.5x/Asset 70@0.5x.png" id="10_am1vj"]
+[ext_resource type="Script" uid="uid://cqa2kgca3x7xm" path="res://Script/LoadFile.cs" id="10_pxugv"]
+[ext_resource type="Script" uid="uid://ds7e08w7x5e57" path="res://Script/Help.cs" id="11_8jbwv"]
+[ext_resource type="Script" uid="uid://8xx3ugg0aej" path="res://Script/SaveFile.cs" id="11_eh0v1"]
+[ext_resource type="Script" uid="uid://b2r75ntam11ka" path="res://Script/SizeSelect.cs" id="11_xvdhi"]
+[ext_resource type="Script" uid="uid://4a7e7kvx5ohu" path="res://Script/AutoCompilerState.cs" id="12_oq4si"]
+[ext_resource type="Texture2D" uid="uid://de3eb3clj2kg3" path="res://Textures/Icon set 1/0.5x/Asset 76@0.5x.png" id="13_m4egf"]
+[ext_resource type="Script" uid="uid://bbt1lgjr4p2wf" path="res://Script/Close.cs" id="14_pi4e7"]
+[ext_resource type="Script" uid="uid://dqoqrqhdg7041" path="res://Script/ClearBoard.cs" id="14_v61lp"]
+[ext_resource type="Texture2D" uid="uid://bk6trb5cym13v" path="res://Textures/Icon set 1/0.5x/Asset 48@0.5x.png" id="15_dgp6r"]
+
+[sub_resource type="Theme" id="Theme_858bn"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ou021"]
+
+[node name="RootNode" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_62e2m")
+
+[node name="BoardContainer" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Board" type="Sprite2D" parent="BoardContainer"]
+texture_filter = 1
+texture_repeat = 1
+centered = false
+script = ExtResource("2_62e2m")
+
+[node name="EditorContainer" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="CodeEdit" type="CodeEdit" parent="EditorContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.728395
+grow_horizontal = 2
+minimap_draw = true
+highlight_all_occurrences = true
+highlight_current_line = true
+gutters_draw_line_numbers = true
+code_completion_enabled = true
+auto_brace_completion_enabled = true
+auto_brace_completion_highlight_matching = true
+script = ExtResource("3_fj5cn")
+metadata/_edit_use_anchors_ = true
+
+[node name="Console" type="CodeEdit" parent="EditorContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.734568
+anchor_right = 0.993056
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "sdddddd"
+editable = false
+scroll_past_end_of_file = true
+highlight_all_occurrences = true
+gutters_draw_line_numbers = true
+script = ExtResource("4_iy58a")
+metadata/_edit_use_anchors_ = true
+
+[node name="HelpPanel" type="Panel" parent="."]
+top_level = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="HelpPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.222222
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = SubResource("Theme_858bn")
+metadata/_edit_use_anchors_ = true
+
+[node name="ItemList" type="ItemList" parent="HelpPanel/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.957031
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 25
+max_text_lines = 3
+text_overrun_behavior = 0
+wraparound_items = false
+item_count = 7
+icon_scale = 0.1
+item_0/text = "Menu"
+item_1/text = "Tipos de Datos"
+item_2/text = "Operaciones"
+item_3/text = "Condicionales"
+item_4/text = "Bucles"
+item_5/text = "Declaracion de Funciones"
+item_6/text = "Funciones Nativas"
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel2" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ItemList" type="ItemList" parent="HelpPanel/Panel2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.00446429
+anchor_top = 0.0972222
+anchor_right = 0.991071
+anchor_bottom = 0.78858
+max_text_lines = 3
+text_overrun_behavior = 0
+wraparound_items = false
+item_count = 5
+icon_scale = 0.1
+item_0/text = "Compila el codigo,y ejecuta los cambios en la pizarra,al compilar se mostraran los errores y lo logs en consola   "
+item_0/icon = ExtResource("5_ou021")
+item_1/text = "Importa un codigo .pw"
+item_1/icon = ExtResource("9_pxugv")
+item_2/text = "Exporta un codigo .pw"
+item_2/icon = ExtResource("8_0ytqx")
+item_3/text = "Ingresa a la configuracion avanzada.Donde podras cambiar las dimiensiones de la pizarra,entre otras cosas"
+item_3/icon = ExtResource("10_am1vj")
+item_4/text = "Borra el contenido de la pizarra"
+item_4/icon = ExtResource("9_3fl80")
+metadata/_edit_use_anchors_ = true
+
+[node name="Tipos de Datos" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/Tipos de Datos"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "El lenguaje soporta los siguientes datos:
+
+1Numeros:
+No se admiten flotates,se puede realizar la asignacion de numeros a variables.Tambien se admiten numeros negativos ej: a<-1
+
+2Cadenas:
+Se admite la declaracion de asignacion de cadenas a variables,las cadenas de texto deben estar contenidas entre \"\" ,no se admiten cadenas vacias ej:a<-\"hola\"
+
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="Operaciones" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/Operaciones"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Se soportan todas las operaciones indicadas en la orden del proyecto:
++Suma
+-Resta
+*Multiplicacion
+**Exponenciacion
+%Modulacion
+<,>,<=,>=,==Comparacion
+&&,||Operadores Logicos
+
+Ademas el lenguaje soporta el uso del signo de agrupacion () para cambiar la presedencia de las operaciones ej a<-(3+3)*-5==-30&&-2**2==4 da como resultado true
+
+Tambien se admite realizar una operacion entre cualquier estructura que represente un valor por ejemplo
+b<-1
+a<-1+b+GetActualX()
+
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="Condicionales" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/Condicionales"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Nuestro lenguaje tambien soporta el condicional if y el else:
+
+if(bool codition){
+...
+}else{
+...
+}
+
+Ejemplo de codigo valido:
+b<-2<1
+if(1+GetActualX()**2==20 &&b){
+	print(\"Entrando en el condicional\")
+}else{
+	print(\"No se cumple la condicion\")
+}"
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="Bucles" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/Bucles"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "El lenguaje soporta los siguientes bucles:
+
+1GoTo:
+Se usa tal y como se solicita en ls especificaciones del proyecto
+
+
+2-while:
+El bucle while cuyo funcionamiento es identico al del propip lenguaje c# funciona de la siguiente manera
+
+while(bool conition){
+....
+}
+-Las variables declaradas dentro del while ejaran de existir cuando se salga del contexto del mismo y las variables globales son accesibles dentro del bloque del while
+
+**Cuando haya presencia de un bucle en el codigo por cuestiones de rendimiento la compilacion en tiempo real se desactivara"
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="FunDec" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/FunDec"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Uno de los aspectos mas avanzados de nuestro lenguaje es que soporta la declaracion de funciones,soporta el uso del return en funciones declaradas por el usario,la declaracion de funciones que reciben argumentos y soporta la recursividad sin retorno como por ejemplo este contador simple:
+fun count(a){
+	if(a==0){
+		print(a)
+		return 0
+	}
+	count(a-1)
+	print(a)
+}
+Para llamar esta funcion basta con hacer count(10)
+Las funciones soportan la declaracion return,por ejemplo  mira esta que te devuelve la raiz de un numero
+fun Sqrt(num){
+	i<-0
+	while(i*i<=num){
+		i<-i+1
+	}
+	return i-1
+}
+print(Sqrt(256))
+print(Sqrt(200*3+58))"
+label_settings = SubResource("LabelSettings_ou021")
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="Funciones Nativas" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/Funciones Nativas"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Nuestro lenguaje tambien soporta todas las funciones solicitadas en la oorientacion del proyecto.Un aspecto importante es que se puede pasar como argumentos a la funcion cualquier expresion representante de valor como una funcion,una variable o una expresion
+a<-0
+a<-a+1
+DrawCircle(5%2,a,GetActualX()+5)
+**Es importante destacar que las funciones que dibujan sobre el canvas ,cuando esten dibujando en una seccion fuera de las dimensiones del canvas  no lanzaran error simplemente no haran nada en esas coordenadas.
+
+Ademas contamos con una nueva funcion nativa print(value) que imprimira un valor en consola"
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="RealTimeComp" type="Panel" parent="HelpPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.222222
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="HelpPanel/RealTimeComp"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Contamos con una opcion avanzada que es la compilacion en tiempo real que va ejecutando el codigo mientras se va escribiendo.
+Es posible desactivarla en los ajustes avanzados.
+
+**Esta se desactivara cuando se detecte un bucle en el codigo principal para evitar que el programa se quede colgado tras la declaracion de un bucle infinito o consumir una cantidad excesiva de recursos."
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 0
+
+[node name="HelpClose" type="TextureButton" parent="HelpPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.965278
+anchor_right = 1.0
+anchor_bottom = 0.0493827
+grow_horizontal = 0
+texture_normal = ExtResource("13_m4egf")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("11_8jbwv")
+metadata/_edit_use_anchors_ = true
+
+[node name="MenuButtons" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.375
+anchor_top = 0.0154321
+anchor_right = 0.611111
+anchor_bottom = 0.0632716
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="CompileButton" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0416667
+anchor_top = 0.142857
+anchor_right = 0.125
+anchor_bottom = 0.785714
+grow_vertical = 2
+texture_normal = ExtResource("4_ee4bf")
+texture_pressed = ExtResource("5_kbped")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="MenuButton" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.882353
+anchor_top = 0.129032
+anchor_right = 0.970588
+anchor_bottom = 0.774194
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("13_m4egf")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ImportButton" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.176471
+anchor_top = 0.129032
+anchor_right = 0.264706
+anchor_bottom = 0.774194
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("8_0ytqx")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ExportButton" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.323529
+anchor_top = 0.129032
+anchor_right = 0.411765
+anchor_bottom = 0.774194
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("9_pxugv")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ConfigButton" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.470588
+anchor_top = 0.129032
+anchor_right = 0.558824
+anchor_bottom = 0.774194
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("10_am1vj")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ClearBoard" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.617647
+anchor_top = 0.129032
+anchor_right = 0.705883
+anchor_bottom = 0.774194
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("9_3fl80")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("14_v61lp")
+metadata/_edit_use_anchors_ = true
+
+[node name="Help" type="TextureButton" parent="MenuButtons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.735294
+anchor_top = 0.129032
+anchor_right = 0.82353
+anchor_bottom = 0.774194
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("15_dgp6r")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("11_8jbwv")
+metadata/_edit_use_anchors_ = true
+
+[node name="ConfigDisplay" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.384549
+anchor_top = 0.209877
+anchor_right = 0.634549
+anchor_bottom = 0.740741
+metadata/_edit_use_anchors_ = true
+
+[node name="TextCanvas" type="Label" parent="ConfigDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0451389
+anchor_top = 0.116279
+anchor_right = 0.961806
+anchor_bottom = 0.209302
+text = "Canvas Size"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="SizeSelect" type="SpinBox" parent="ConfigDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0729167
+anchor_top = 0.232558
+anchor_right = 0.927083
+anchor_bottom = 0.322674
+min_value = 25.0
+max_value = 500.0
+value = 25.0
+alignment = 1
+update_on_text_changed = true
+script = ExtResource("11_xvdhi")
+metadata/_edit_use_anchors_ = true
+
+[node name="AutoCompilerStatus" type="CheckButton" parent="ConfigDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0729167
+anchor_top = 0.395349
+anchor_right = 0.899306
+anchor_bottom = 0.485465
+text = "Auto Compiler"
+alignment = 1
+script = ExtResource("12_oq4si")
+metadata/_edit_use_anchors_ = true
+
+[node name="Close" type="TextureButton" parent="ConfigDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.878472
+anchor_top = 0.0232558
+anchor_right = 0.979167
+anchor_bottom = 0.0930233
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("13_m4egf")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("14_pi4e7")
+metadata/_edit_use_anchors_ = true
+
+[node name="MenuButtonPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.486111
+anchor_top = 0.00617284
+anchor_right = 0.5
+anchor_bottom = 0.0246914
+offset_left = -8.0
+offset_right = 16.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuButton" type="TextureButton" parent="MenuButtonPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("7_iy58a")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="LoadFile" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 1
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+script = ExtResource("10_pxugv")
+
+[node name="SaveFile" type="FileDialog" parent="."]
+auto_translate_mode = 1
+initial_position = 1
+access = 2
+script = ExtResource("11_eh0v1")
+
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+initial_position = 1
+size = Vector2i(217, 100)
+
+[connection signal="pressed" from="HelpPanel/HelpClose" to="HelpPanel/HelpClose" method="OnClick"]
+[connection signal="pressed" from="MenuButtons/MenuButton" to="." method="PressMenuExtended"]
+[connection signal="pressed" from="MenuButtons/ImportButton" to="." method="ImportButton"]
+[connection signal="pressed" from="MenuButtons/ExportButton" to="." method="ExportButton"]
+[connection signal="pressed" from="MenuButtons/ConfigButton" to="ConfigDisplay/Close" method="OnClick"]
+[connection signal="pressed" from="MenuButtons/ClearBoard" to="MenuButtons/ClearBoard" method="OnClick"]
+[connection signal="pressed" from="MenuButtons/Help" to="MenuButtons/Help" method="OnClick"]
+[connection signal="value_changed" from="ConfigDisplay/SizeSelect" to="ConfigDisplay/SizeSelect" method="_on_value_changed"]
+[connection signal="pressed" from="ConfigDisplay/AutoCompilerStatus" to="ConfigDisplay/AutoCompilerStatus" method="_on_pressed"]
+[connection signal="pressed" from="ConfigDisplay/Close" to="ConfigDisplay/Close" method="OnClick"]
+[connection signal="pressed" from="MenuButtonPanel/MenuButton" to="." method="PressMenuExtended"]
+[connection signal="file_selected" from="LoadFile" to="LoadFile" method="LoadFileButton"]
+[connection signal="file_selected" from="SaveFile" to="SaveFile" method="SaveFileButton"]

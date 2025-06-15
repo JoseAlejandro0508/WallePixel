@@ -13,7 +13,10 @@ public class UknownValue:BasicValue{
     override public bool CheckSemantic(List<Error> CE)
     {
 
-        if(Date is not ValueType)return false;
+        if(Date is not ValueType && Date is not string){
+            CE.Add(new Error("El token no pose un formato de valor valido",null,ErrorType.SemanticError));
+            return false;
+        }
         try{
             GetValue(CE);
 

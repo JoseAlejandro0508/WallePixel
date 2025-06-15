@@ -23,7 +23,7 @@ public class Distint:BinaryExpression{
             return;
 
         }
-                 CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 valores del mismo tipo",Operator.Position));
+                 CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 valores del mismo tipo",Operator.Position,ErrorType.SemanticError));
         throw new Exception("Tipos de datos invalidos");
 
     

@@ -18,7 +18,7 @@ public  static class LexicDates{
 
     public static void InitLexic(){
 
-        RegisterKeyword("Spawn",new TokenInfo(TokenIDS.SpawnFunc));
+       /*RegisterKeyword("Spawn",new TokenInfo(TokenIDS.SpawnFunc));
         RegisterKeyword("Color",new TokenInfo(TokenIDS.ColorFunc));
         RegisterKeyword("Size",new TokenInfo(TokenIDS.SizeFunc));
         RegisterKeyword("DrawLine",new TokenInfo(TokenIDS.DrawLineFunc));
@@ -33,7 +33,9 @@ public  static class LexicDates{
         RegisterKeyword("IsBrushSize",new TokenInfo(TokenIDS.IsBrushSizeFunc));
         RegisterKeyword("IsCanvasColor",new TokenInfo(TokenIDS.IsCanvasColorFunc));
         RegisterKeyword("IsColor",new TokenInfo(TokenIDS.IsColorFunc));
+        */
         RegisterKeyword("if",new TokenInfo(TokenIDS.IF));
+        RegisterKeyword("return",new TokenInfo(TokenIDS.Return));
         RegisterKeyword("else",new TokenInfo(TokenIDS.ELSE));
         RegisterKeyword("fun",new TokenInfo(TokenIDS.FUNASIGN));
 
@@ -57,7 +59,7 @@ public  static class LexicDates{
         RegisterOperator("||",new TokenInfo(TokenIDS.OrOper));
 
         RegisterOperator(",",new TokenInfo(TokenIDS.SeparatorParam));
-        RegisterOperator('"'.ToString(),new TokenInfo(TokenIDS.SeparatorString));
+
         RegisterOperator("(",new TokenInfo(TokenIDS.OpenParenteses));
         RegisterOperator(")",new TokenInfo(TokenIDS.CloseParenteses));
         RegisterOperator("[",new TokenInfo(TokenIDS.OpenCorchete));
@@ -131,4 +133,5 @@ public enum TokenIDS{
     ELSE,//else
 
     FUNASIGN,//fun
+    Return,
 }

@@ -8,7 +8,10 @@ public class Environment{
     public Environment(List<Error> CE){
         this.CE= CE;
         Enclosing=null;
+        
+
     }
+    
     public Environment (Environment enclosing,List<Error> CE){
         this.CE= CE;
         Enclosing=enclosing;
@@ -17,13 +20,13 @@ public class Environment{
         if(Enclosing==null){
             Enclosing=new Environment (CE);
         }else{
-            Enclosing.Enclosing=new Environment(CE);
+            Enclosing.AddEnclosing();
         }
 
     }
     public void CloseEnclosing(){
-        if(Enclosing!=null){
-            Enclosing.Enclosing=null;
+        if(Enclosing.Enclosing!=null){
+            Enclosing.CloseEnclosing();
 
         }else{
             Enclosing=null;
@@ -31,7 +34,7 @@ public class Environment{
 
     }
     public void Assign(Token ID, BasicValue value){
-        if(Enclosing!=null && !Memory.ContainsKey(ID.Value)){
+        if(Enclosing!=null && (true||!Memory.ContainsKey(ID.Value))){
 
             Enclosing.Assign (ID, value);
 
@@ -39,6 +42,7 @@ public class Environment{
             Memory[ID.Value]=value;
 
         }
+
         
         
         
@@ -52,7 +56,7 @@ public class Environment{
         }
         Value=null;
         if(!Memory.ContainsKey(ID.Value)){
-            CE.Add(new Error("La variable no existe en memoria",ID.Position));
+            CE.Add(new Error($"La variable {ID.Value} no existe en memoria",ID.Position,ErrorType.RuntimeError));
             return false;
         }
         Value=Memory[ID.Value];
@@ -81,7 +85,7 @@ public class Environment{
     }
     public bool AddTag(Token ID,int pos){
         if(CheckTag(ID)){
-            CE.Add(new Error("La etiqueta ya existe en memoria",ID.Position));
+            CE.Add(new Error($"La etiqueta {ID.Value} ya existe en memoria",ID.Position,ErrorType.RuntimeError));
             return false;
         }
         Tags[ID.Value]=pos;
@@ -91,7 +95,7 @@ public class Environment{
     public bool GetTagPos(Token ID, out int Pos){
         Pos=0;
         if(!CheckTag(ID)){
-            CE.Add(new Error("La etiqueta NO existe en memoria",ID.Position));
+            CE.Add(new Error($"La etiqueta {ID.Value} NO existe en memoria",ID.Position,ErrorType.RuntimeError));
             return false;
         }
         Pos=Tags[ID.Value];
@@ -100,11 +104,11 @@ public class Environment{
     }
     public bool DefineFunc(Token ID,Calleable Func){
         if(Enclosing!=null){
-            CE.Add(new Error("No se pueden definir funciones en un bloque ",ID.Position));
+            CE.Add(new Error("No se pueden definir funciones en un bloque ",ID.Position,ErrorType.SintacticError));
             return false;
         }
         if(GlobalFunctions.ContainsKey(ID.Value)){
-            CE.Add(new Error("Ya existe una definicion para esa funcion",ID.Position));
+            CE.Add(new Error($"Ya existe una definicion para la funcion {ID.Value}",ID.Position,ErrorType.RuntimeError));
             return false;
         }
         GlobalFunctions[ID.Value]=Func;
@@ -114,7 +118,7 @@ public class Environment{
     public Calleable? GetFunc(Token ID){
 
         if(!GlobalFunctions.ContainsKey(ID.Value)){
-            CE.Add(new Error($"No existe se ha definido la funcion {ID.Value}",ID.Position));
+            CE.Add(new Error($"No se ha definido la funcion {ID.Value}",ID.Position,ErrorType.RuntimeError));
             return null;
         }
         return GlobalFunctions[ID.Value];

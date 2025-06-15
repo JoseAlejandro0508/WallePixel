@@ -9,7 +9,7 @@ public class Or:BinaryExpression{
     public override void GetValue(List<Error> CE)
     {
         if(!(left.Value is bool) || !(right.Value is bool)){
-             CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 booleanos",Operator.Position));
+             CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 booleanos",Operator.Position,ErrorType.SemanticError));
             throw new Exception("Tipos de datos invalidos");
 
         }

@@ -9,7 +9,7 @@ public class More:BinaryExpression{
     public override void GetValue(List<Error> CE)
     {
         if(!(left.Value is int) || !(right.Value is int)){
-             CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 enteros",Operator.Position));
+             CE.Add(new Error($"Operacion no valida,solo es posible utilizar el operador {Operator.Value} and entre 2 enteros",Operator.Position,ErrorType.SemanticError));
             throw new Exception("Tipos de datos invalidos");
 
         }

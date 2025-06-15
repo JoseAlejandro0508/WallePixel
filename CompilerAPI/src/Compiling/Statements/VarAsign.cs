@@ -14,7 +14,7 @@ class VariableAssign:Statement{
     public override void Execute()
     {
         if(!VariableValue.CheckSemantic(CompilatorRef.CE)){
-            CompilatorRef.CE.Add(new Error($"Error al obtener el valor de la condicion del condicional while", ID.Position));
+            CompilatorRef.CE.Add(new Error($"Error al obtener el valor que se le esta asignando a la variable {ID.Value}", ID.Position,ErrorType.RuntimeError));
             return;
         };
     

@@ -8,7 +8,7 @@ public class LexicalAnalizer{
         LexicDates.InitLexic();
 
     }
-    public void GetTokens(List<Error>CompilationsError){
+    public void GetTokens(List<Error> CompilationsError){
         while(!Reader.EOF){
             Reader.WhiteSpaceMove();
             if(Reader.EOL){
@@ -33,12 +33,12 @@ public class LexicalAnalizer{
                     Tokens.Add(new Token(Reader.CodeLocation,TokenType.Tag,Value_));
                     continue;
                 }
-                if(Reader.PointerValue=='('){
+                if(!Reader.EOL && Reader.PointerValue=='('){
                     Tokens.Add(new Token(Reader.CodeLocation,TokenType.Function,Value_));
                     continue;
 
                 }
-                if(Reader.PointerValue==']'){
+                if(!Reader.EOL && Reader.PointerValue==']'){
                     Tokens.Add(new Token(Reader.CodeLocation,TokenType.Tag,Value_));
                     continue;
 
@@ -54,7 +54,7 @@ public class LexicalAnalizer{
             if(Reader.ReadString(out Value_,CompilationsError)){
                 Tokens.Add(new Token(Reader.CodeLocation,TokenType.String,Value_));
                 continue;
-            }else if(CompilationsError.Count>0)return;
+            }//else if(CompilationsError.Count>0)return;
             bool Matched=false;
             foreach(string oper in  LexicDates.Operators.Keys.OrderByDescending(k=>k.Length)){
 
@@ -68,9 +68,15 @@ public class LexicalAnalizer{
 
             }
             if(Matched)continue;
+            if(Reader.EOL){
+                continue;
+            }
+            CompilationsError.Add(new Error($"No se reconoce el caracter {Reader.PointerValue} ",Reader.CodeLocation,ErrorType.LexicError));
+
+            Reader.MovePointer();
+
+
             
-            CompilationsError.Add(new Error($"No se reconoce el caracter {Reader.PointerValue} ",Reader.CodeLocation));
-            return;
             
 
         }
@@ -106,6 +112,7 @@ public class LexicalAnalizer{
         }
         public bool EOL{
             get{
+                if(EOF)return true;
                 
                 return PointerValue=='\n';
             }
@@ -134,6 +141,7 @@ public class LexicalAnalizer{
             }
             return WhiteSpace;
         }
+        
         public void MovePointer(){
             if(EOF)return;
             bool inEOL=EOL;
@@ -175,12 +183,39 @@ public class LexicalAnalizer{
         public bool ReadNumber(out string Number){
             Number="";
             WhiteSpaceMove();
+            /*if(CheckLastSymbol("-") || CheckLastSymbol("+")){
+                while(!EOF&&PointerValue=='+'){
+                    Number+=PointerValue;
+                    MovePointer();
+                }
+                while(!EOF&&PointerValue=='-'){
+                    Number+=PointerValue;
+                    MovePointer();
+                }
+            }*/
+
+            
             while(!EOF&&char.IsDigit(PointerValue)){
                 Number+=PointerValue;
                 MovePointer();
             }
+
             if(Number.Length>0)TokensInLine++;
             return Number.Length>0;
+        }
+        public bool CheckLastSymbol(string Check){
+            int id=Check.Length-1;
+            int desf=0;
+            for(int i=pos;i>=0;i--){
+                while((pos-desf>=0) && (char.IsWhiteSpace(code[pos-desf]))){
+                    desf++;
+
+                }
+                if((pos-desf)<0)return false;
+                if(code[pos-desf]!=Check[id])return false;
+            }
+            return true;
+
         }
         public bool ReadString(out string StringVal,List<Error> CompilationErrors){
             
@@ -192,7 +227,7 @@ public class LexicalAnalizer{
 
             while(!EOF && !EOL && PointerValue!='"'){
                 if( !char.IsLetterOrDigit(PointerValue)){
-                    CompilationErrors.Add(new Error($"Invalid string char {PointerValue}",CodeLocation));
+                    CompilationErrors.Add(new Error($"Invalid string char {PointerValue}",CodeLocation,ErrorType.LexicError));
                     return false;
                 }
                 StringVal+=PointerValue;
@@ -201,11 +236,11 @@ public class LexicalAnalizer{
 
             
             if(EOF||PointerValue!='"'){
-                CompilationErrors.Add(new Error("Invalid string definition, \" unclosed",CodeLocation));
+                CompilationErrors.Add(new Error("Invalid string definition, \" unclosed",CodeLocation,ErrorType.SintacticError));
                 return false;
             }
             if(StringVal.Length==0){
-                CompilationErrors.Add(new Error("Null string value",CodeLocation));
+                CompilationErrors.Add(new Error("Null string value",CodeLocation,ErrorType.SemanticError));
                 return false;
             }
             MovePointer();
@@ -219,6 +254,7 @@ public class LexicalAnalizer{
                 if(pos+it>code.Length-1){
                     return false;
                 }
+
                 if(code[pos+it]!=ch)return false;
                 it++;
                 
