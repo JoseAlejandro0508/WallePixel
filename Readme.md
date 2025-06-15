@@ -14,4 +14,8 @@ Se agrego :
 
 ## Requerimientos para ejecutar
 
-Godot
+Abra el proyecto con godot
+
+# Contacto
+## Telegram 
+[Necesita contactarme?](https://t.me/cuban_developer)
