@@ -1,10 +1,11 @@
-[gd_scene load_steps=24 format=3 uid="uid://by2s5ulamtm45"]
+[gd_scene load_steps=26 format=3 uid="uid://by2s5ulamtm45"]
 
 [ext_resource type="Script" uid="uid://b1iqkdnq7yjxg" path="res://Script/Principal.cs" id="1_62e2m"]
 [ext_resource type="Script" uid="uid://su6shjvqcy2q" path="res://Script/BoardControl.cs" id="2_62e2m"]
 [ext_resource type="Script" uid="uid://c4aqo1c18kcn2" path="res://Script/EditorLogic.cs" id="3_fj5cn"]
 [ext_resource type="Texture2D" uid="uid://c001s26g5bldn" path="res://Textures/Icon set 1/1x/Asset 84.png" id="4_ee4bf"]
 [ext_resource type="Script" uid="uid://5viunrtjixn2" path="res://Script/ConsoleLogic.cs" id="4_iy58a"]
+[ext_resource type="Script" uid="uid://c4p6bm1w34wlf" path="res://Script/TutorialLines.cs" id="5_8jbwv"]
 [ext_resource type="Texture2D" uid="uid://c16rb7ritjekp" path="res://Textures/Icon set 1/0.5x/Asset 43@0.5x.png" id="5_kbped"]
 [ext_resource type="Texture2D" uid="uid://ck6fkcsvsks87" path="res://Textures/Icon set 1/0.5x/Asset 84@0.5x.png" id="5_ou021"]
 [ext_resource type="Texture2D" uid="uid://7vbfpahjkap8" path="res://Textures/Icon set 1/0.5x/Asset 28@0.5x.png" id="7_iy58a"]
@@ -21,6 +22,7 @@
 [ext_resource type="Script" uid="uid://bbt1lgjr4p2wf" path="res://Script/Close.cs" id="14_pi4e7"]
 [ext_resource type="Script" uid="uid://dqoqrqhdg7041" path="res://Script/ClearBoard.cs" id="14_v61lp"]
 [ext_resource type="Texture2D" uid="uid://bk6trb5cym13v" path="res://Textures/Icon set 1/0.5x/Asset 48@0.5x.png" id="15_dgp6r"]
+[ext_resource type="Script" uid="uid://c54a2wm2s2b05" path="res://Script/TutorialClose.cs" id="22_3fl80"]
 
 [sub_resource type="Theme" id="Theme_858bn"]
 
@@ -92,6 +94,7 @@ script = ExtResource("4_iy58a")
 metadata/_edit_use_anchors_ = true
 
 [node name="HelpPanel" type="Panel" parent="."]
+visible = false
 top_level = true
 layout_mode = 1
 anchors_preset = 15
@@ -127,6 +130,7 @@ item_3/text = "Condicionales"
 item_4/text = "Bucles"
 item_5/text = "Declaracion de Funciones"
 item_6/text = "Funciones Nativas"
+script = ExtResource("5_8jbwv")
 metadata/_edit_use_anchors_ = true
 
 [node name="Panel2" type="Panel" parent="HelpPanel"]
@@ -646,6 +650,48 @@ script = ExtResource("11_eh0v1")
 initial_position = 1
 size = Vector2i(217, 100)
 
+[node name="Tutorial" type="ItemList" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.00446429
+anchor_top = 0.0972222
+anchor_right = 0.991071
+anchor_bottom = 0.78858
+max_text_lines = 3
+text_overrun_behavior = 0
+wraparound_items = false
+item_count = 7
+icon_scale = 0.1
+item_0/text = "Compila el codigo,y ejecuta los cambios en la pizarra,al compilar se mostraran los errores y lo logs en consola   "
+item_0/icon = ExtResource("5_ou021")
+item_1/text = "Importa un codigo .pw"
+item_1/icon = ExtResource("9_pxugv")
+item_2/text = "Exporta un codigo .pw"
+item_2/icon = ExtResource("8_0ytqx")
+item_3/text = "Ingresa a la configuracion avanzada.Donde podras cambiar las dimiensiones de la pizarra,entre otras cosas"
+item_3/icon = ExtResource("10_am1vj")
+item_4/text = "Borra el contenido de la pizarra"
+item_4/icon = ExtResource("9_3fl80")
+item_5/text = "Contraer menu"
+item_5/icon = ExtResource("13_m4egf")
+item_6/text = "Desplegar menu"
+item_6/icon = ExtResource("7_iy58a")
+metadata/_edit_use_anchors_ = true
+
+[node name="HelpClose" type="TextureButton" parent="Tutorial"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.966944
+anchor_right = 1.00038
+anchor_bottom = 0.0915179
+grow_horizontal = 0
+texture_normal = ExtResource("13_m4egf")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("22_3fl80")
+metadata/_edit_use_anchors_ = true
+
+[connection signal="item_selected" from="HelpPanel/Panel/ItemList" to="HelpPanel/Panel/ItemList" method="_on_tutorial_lines_item_selected"]
 [connection signal="pressed" from="HelpPanel/HelpClose" to="HelpPanel/HelpClose" method="OnClick"]
 [connection signal="pressed" from="MenuButtons/MenuButton" to="." method="PressMenuExtended"]
 [connection signal="pressed" from="MenuButtons/ImportButton" to="." method="ImportButton"]
@@ -659,3 +705,4 @@ size = Vector2i(217, 100)
 [connection signal="pressed" from="MenuButtonPanel/MenuButton" to="." method="PressMenuExtended"]
 [connection signal="file_selected" from="LoadFile" to="LoadFile" method="LoadFileButton"]
 [connection signal="file_selected" from="SaveFile" to="SaveFile" method="SaveFileButton"]
+[connection signal="pressed" from="Tutorial/HelpClose" to="Tutorial/HelpClose" method="OnClick"]
