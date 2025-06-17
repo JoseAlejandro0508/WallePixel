@@ -10,7 +10,11 @@ public partial class SizeSelect : SpinBox
     }
     public void _on_value_changed(float value){
         GlobalDates.BoardSize=((int)value,(int)value);
-        GlobalDates.BoardInstance.CreateBoard();
+        if(GlobalDates.BoardInstance!=null){
+            GlobalDates.BoardInstance.CreateBoard();
+
+        }
+
     }
     public override void _Process(double delta)
     {
