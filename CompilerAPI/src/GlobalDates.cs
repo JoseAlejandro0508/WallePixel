@@ -21,7 +21,7 @@ public static class GlobalDates{
     public static int BrushSize=1;
     public static int MaxBucleable=1000;
 
-    public static bool Autoexecute=true;
+    public static bool Autoexecute=false;
     public static bool FinishCompiling=false;
     public static string[,] BoardMatrix;
     public static void InitBoardMatrix(){

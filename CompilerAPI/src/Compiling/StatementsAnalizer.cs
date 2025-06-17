@@ -61,13 +61,19 @@ public class Compiling
         ProgramEnvironment.DefineFunc(new Token(null, TokenType.Function, "print"),
             new Print(new Token(null, TokenType.Function, "print"), this)
         );
+        ProgramEnvironment.DefineFunc(new Token(null, TokenType.Function, "rand"),
+            new Rand(new Token(null, TokenType.Function, "rand"), this)
+        );
+        ProgramEnvironment.DefineFunc(new Token(null, TokenType.Function, "Move"),
+            new Move(new Token(null, TokenType.Function, "Move"), this)
+        );
 
 
     }
     public void Interprete(bool Autoexecute=false)
     {
         
-        SpawnValidCheck();
+        
         ExecuteTags();
         if (CE.Count != 0)
         {
@@ -80,6 +86,11 @@ public class Compiling
 
         while (PosInterp < Declarations.Count)
         {
+            if(Declarations[PosInterp] is TagAsignament){
+                PosInterp++;
+
+                continue;
+            }
             if(Autoexecute&& (Declarations[PosInterp] is WhileBucle || Declarations[PosInterp] is GOTOBucle )){
                 Logs.Add("En el modo de auto ejecucion los bucles no se ejecutan por razones de rendimiento");
                 PosInterp++;
@@ -135,22 +146,31 @@ public class Compiling
         return true;
     }
     public void ExecuteTags(){
-        bool found = true;
-        while (found){
+        //bool found = true;
+        /*while (found){
             found=false;
             for (int i = 0;i<Declarations.Count;i++){
                 if(Declarations[i] is TagAsignament){
+                    
                     PosInterp=i;
                     found=true;
                     Declarations[i].Execute();
-                    Declarations.RemoveAt(i);
+                    //Declarations.RemoveAt(i);
                     break;
                 }
+        }*/
+        for (int i = 0;i<Declarations.Count;i++){
+                if(Declarations[i] is TagAsignament){
+                    
+                    PosInterp=i;
+                    //found=true;
+                    Declarations[i].Execute();
+                    //Declarations.RemoveAt(i);
+    
+            }
+        
         }
         PosInterp =0;
-
-
-        }
 
 
     }
@@ -163,6 +183,7 @@ public class Compiling
             Declarations.Add(Dec);
 
         }
+        SpawnValidCheck();
 
     }
     public Statement? Declaration()
@@ -626,6 +647,7 @@ public class Compiling
                     parser.Stream.Syncronize();
                     return false;
                 }
+                Arguments.Add(arg);
                 parser.Stream.Next();
             }
 

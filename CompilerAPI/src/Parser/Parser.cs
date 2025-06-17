@@ -294,6 +294,7 @@ public class Parser{
             }catch{
                 throw new Exception("Error al obtener argumento");
             }
+            Arguments.Add(arg);
         }
 
         if(!Stream.Consume(TokenIDS.CloseParenteses,"Sintaxis de la funcion invalida se esperaba )",initialAdvance:false)){

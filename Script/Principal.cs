@@ -95,8 +95,11 @@ public partial class Principal : Control
             Blocked = true;
             ReadCodeFromEditor();
             Compiler.GetAllDeclarations();
+            if (GlobalDates.Autoexecute){
+                 Compiler.Interprete(AutoExecute);
 
-            Compiler.Interprete(AutoExecute);
+             }
+           
 
 
         }
@@ -150,12 +153,16 @@ public partial class Principal : Control
 
     public void Autoexecute()
     {
-        if (GlobalDates.Autoexecute) CompilateCode(AutoExecute: true);
+        CompilateCode(AutoExecute: true);
+    }
+    public void _on_code_edit_text_changed(){
+        Autoexecute();
+
     }
 
     public override void _Process(double delta)
     {
-        Autoexecute();
+        
 
 
         //ReadCodeFromEditor();

@@ -80,9 +80,10 @@ metadata/_edit_use_anchors_ = true
 [node name="Console" type="CodeEdit" parent="EditorContainer"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.734568
-anchor_right = 0.993056
-anchor_bottom = 1.0
+anchor_left = 0.0138889
+anchor_top = 0.728395
+anchor_right = 1.00694
+anchor_bottom = 0.993827
 grow_horizontal = 2
 grow_vertical = 0
 text = "sdddddd"
@@ -568,7 +569,7 @@ anchor_left = 0.0729167
 anchor_top = 0.232558
 anchor_right = 0.927083
 anchor_bottom = 0.322674
-min_value = 25.0
+min_value = 10.0
 max_value = 500.0
 value = 25.0
 alignment = 1
@@ -691,6 +692,7 @@ stretch_mode = 0
 script = ExtResource("22_3fl80")
 metadata/_edit_use_anchors_ = true
 
+[connection signal="text_changed" from="EditorContainer/CodeEdit" to="." method="_on_code_edit_text_changed"]
 [connection signal="item_selected" from="HelpPanel/Panel/ItemList" to="HelpPanel/Panel/ItemList" method="_on_tutorial_lines_item_selected"]
 [connection signal="pressed" from="HelpPanel/HelpClose" to="HelpPanel/HelpClose" method="OnClick"]
 [connection signal="pressed" from="MenuButtons/MenuButton" to="." method="PressMenuExtended"]

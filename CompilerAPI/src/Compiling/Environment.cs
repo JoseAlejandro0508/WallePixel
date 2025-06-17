@@ -34,7 +34,7 @@ public class Environment{
 
     }
     public void Assign(Token ID, BasicValue value){
-        if(Enclosing!=null && (true||!Memory.ContainsKey(ID.Value))){
+        if(Enclosing!=null && (false||!Memory.ContainsKey(ID.Value))){
 
             Enclosing.Assign (ID, value);
 
