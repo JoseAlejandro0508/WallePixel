@@ -14,7 +14,7 @@ Se agrego :
 
 ## Requerimientos para ejecutar
 
-Abra el proyecto con godot
+Abra el proyecto con godot 4.4.1
 
 # Contacto
 ## Telegram 
